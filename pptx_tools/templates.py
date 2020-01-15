@@ -38,7 +38,7 @@ class TemplateExample(AbstractTemplate):
     """
     Class handling example-template.pptx).
     """
-    TEMPLATE_FILE = '..\\resources\pptx_template\\example-template.pptx'
+    TEMPLATE_FILE = '..\\resources\\example-template.pptx'
 
     def __init__(self):
         self.prs = Presentation(self.TEMPLATE_FILE)
