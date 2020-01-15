@@ -173,6 +173,8 @@ class PPTXCreator:
             self.create_presentation_from_template(template)
         else:
             self.prs = Presentation()
+            self.title_layout = self.prs.slide_masters[0].slide_layouts[0]
+            self.default_layout = self.prs.slide_masters[0].slide_layouts[0]
 
     def create_presentation_from_template(self, template):
         self.template = template

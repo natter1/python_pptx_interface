@@ -7,7 +7,7 @@ long_description = (root_path / "README.rst").read_text()
 
 setup(
     name='python-pptx-interface',
-    version='0.0.1',
+    version='0.0.2',
     packages=['pptx_tools'],
     url='https://github.com/natter1/python_pptx_interface.git',
     license='MIT',
@@ -19,4 +19,7 @@ setup(
     install_requires=[
         "python-pptx",
     ],
+    package_data={
+        'pptx_tools': ['resources/example-template.pptx']
+    }
 )

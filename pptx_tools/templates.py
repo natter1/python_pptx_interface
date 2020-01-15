@@ -2,6 +2,7 @@
 This file contains variables with names of important pptx template master_slide shapes
 """
 from datetime import datetime
+import pkg_resources
 
 # from pptx.enum.text import MSO_AUTO_SIZE
 from pptx import Presentation
@@ -38,7 +39,7 @@ class TemplateExample(AbstractTemplate):
     """
     Class handling example-template.pptx).
     """
-    TEMPLATE_FILE = '..\\resources\\example-template.pptx'
+    TEMPLATE_FILE = pkg_resources.resource_filename('pptx_tools', 'resources/example-template.pptx')
 
     def __init__(self):
         self.prs = Presentation(self.TEMPLATE_FILE)
@@ -79,20 +80,6 @@ class TemplateExample(AbstractTemplate):
         for slide_master in self.prs.slide_masters:
             result.extend(slide_master.shapes)
         return result
-
-
-# ETIT_16-9.pptx is not part of the repository due to legal restrictions!
-class TemplateETIT169(TemplateExample):
-    """
-    Class handling ETIT 16:9 template.
-    """
-    TEMPLATE_FILE = '..\\resources\pptx_template\\ETIT_16-9.pptx'
-
-    def __init__(self):
-        super().__init__()
-        date_time = datetime.now().strftime("%d %B, %Y")
-        self.set_author("Nathanael Jöhrmann", city="Chemnitz", date=date_time)
-        self.set_website("https://www.tu-chemnitz.de/etit/wetel/")
 
 
 def analyze_pptx(template_file):
@@ -170,7 +157,7 @@ def change_paragraph_text_to(paragraph, text):
     """
     font = paragraph.runs[0].font
     paragraph.text = text
-    copy_font(_from=font, to=paragraph.runs[0].font)
+    copy_font(_from=font, _to=paragraph.runs[0].font)
 
 
 def analyze_paragraphs(paragraphs):
