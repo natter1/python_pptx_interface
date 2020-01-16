@@ -13,36 +13,7 @@ from pptx.slide import Slide
 from pptx_tools.font_style import PPTXFontStyle
 
 
-def main():
-    pass
-    # from pptx_tools.templates import TemplateExample
-    # from pptx_tools.pi88_importer import PI88Measurement
-    # from pptx_tools.pi88_plotter import PI88Plotter
-    #
-    # # pptx = PPTXCreator()  # create pptx without using a template file
-    # pptx = PPTXCreator(TemplateExample())
-    # title_slide = pptx.create_title_slide(title="PPTXCreator Demo")
-    # slide2 = pptx.add_slide(title="Normal slide")
-    #
-    # plotter = PI88Plotter(PI88Measurement("..\\resources\\AuSn_Creep\\1000uN 01 LC.tdm"))
-    # fig = plotter.get_load_displacement_plot()
-    # fig_width = fig.get_figwidth()
-    # zoom = 1
-    # picture = pptx.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.2, 0.25),
-    #                                      width=Inches(fig_width * zoom))
-    #
-    #
-    # zoom = 0.2
-    # pptx.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.7, 0.25), width=Inches(fig_width * zoom))
-    #
-    # pptx.add_text_box(slide2, "This is the first paragraph\n... and here comes the second", PPTXPosition(0.7, 0.7))
-    # pptx.save("delme_pptx_creator_demo.pptx")
-
-
 class PPTXPosition:
-    # reposition picture:
-    # picture.left = Inches(1)
-    # picture.top = Inches(3)
     """
     Used to generate positions of elements in slide coordiinates
     saves pptx presentation in class (PPTXPosition.prs) - this allows to call methods without setting prs each time:
@@ -232,7 +203,7 @@ class PPTXCreator:
         :return: pptx.shapes.picture.Picture
         """
         if "width" not in kwargs:
-            kwargs["width"] = fig.get_figwidth() * zoom
+            kwargs["width"] = Inches(fig.get_figwidth() * zoom)
         if not pptx_position:
             pptx_position = self.default_position
         kwargs.update(pptx_position.dict())
@@ -241,7 +212,8 @@ class PPTXCreator:
             pic = slide.shapes.add_picture(output, **kwargs)  # 0, 0)#, left, top)
         return pic
 
-    def add_text_box(self, slide, text: str, position: PPTXPosition, font: PPTXFontStyle = None) -> Shape:  # -> added text box shape
+    def add_text_box(self, slide, text: str, position: PPTXPosition, font: PPTXFontStyle = None) -> Shape:
+        """ Adds a tex box with given text using given position and font."""
         width = height = Inches(1)  # no auto-resizing of shape -> has to be done inside PowerPoint
         result = slide.shapes.add_textbox(**position.dict(), width=width, height=height)
         result.text_frame.auto_size = MSO_AUTO_SIZE.SHAPE_TO_FIT_TEXT
@@ -251,6 +223,7 @@ class PPTXCreator:
         return result
 
     def move_slide(self, slide: Slide, new_index: int):
+        """Moves the given slide to position new_index."""
         _sldIdLst = self.prs.slides._sldIdLst
 
         old_index = None
@@ -302,7 +275,3 @@ class PPTXCreator:
         self.move_slide(result, slide_index)
 
         return result
-
-
-if __name__ == '__main__':
-    main()
