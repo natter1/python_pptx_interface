@@ -5,8 +5,12 @@ This module provides an easier Interface to create *.pptx presentations using th
 import io
 
 from pptx import Presentation
+from pptx.shapes.autoshape import Shape
 from pptx.util import Inches
 from pptx.enum.text import MSO_AUTO_SIZE
+from pptx.slide import Slide
+
+from pptx_tools.font_style import PPTXFontStyle
 
 
 def main():
@@ -176,18 +180,18 @@ class PPTXCreator:
             self.title_layout = self.prs.slide_masters[0].slide_layouts[0]
             self.default_layout = self.prs.slide_masters[0].slide_layouts[0]
 
-    def create_presentation_from_template(self, template):
+    def create_presentation_from_template(self, template) -> None:
         self.template = template
         self.prs = template.prs
         self.title_layout = template.title_layout
         self.default_layout = template.default_layout
 
-    def create_title_slide(self, title, layout=None):
+    def create_title_slide(self, title, layout=None) -> Slide:
         if not layout:
             layout = self.title_layout
         return self.add_slide(title, layout)
 
-    def add_slide(self, title, layout=None):
+    def add_slide(self, title, layout=None) -> Slide:
         if not layout:
             layout = self.default_layout
         slide = self.prs.slides.add_slide(layout)
@@ -237,15 +241,27 @@ class PPTXCreator:
             pic = slide.shapes.add_picture(output, **kwargs)  # 0, 0)#, left, top)
         return pic
 
-    def add_text_box(self, slide, text: str, position: PPTXPosition):  # -> added text box shape
-        # todo: implement font
+    def add_text_box(self, slide, text: str, position: PPTXPosition, font: PPTXFontStyle = None) -> Shape:  # -> added text box shape
         width = height = Inches(1)  # no auto-resizing of shape -> has to be done inside PowerPoint
         result = slide.shapes.add_textbox(**position.dict(), width=width, height=height)
         result.text_frame.auto_size = MSO_AUTO_SIZE.SHAPE_TO_FIT_TEXT
         result.text_frame.text = text  # first paragraph
-        # todo: remove - only for testing:
-        # result.text_frame.add_paragraph().text = "aditional paragraph"
+        if font:
+            font.write_shape(result)
         return result
+
+    def move_slide(self, slide: Slide, new_index: int):
+        _sldIdLst = self.prs.slides._sldIdLst
+
+        old_index = None
+        for index, entry in enumerate((_sldIdLst.sldId_lst)):
+            if entry.id == slide.slide_id:
+                old_index = index
+
+        if old_index is not None:
+            to_move = _sldIdLst[old_index]
+            list(_sldIdLst).pop(old_index)
+            _sldIdLst.insert(new_index, to_move)
 
     @staticmethod
     def remove_unpopulated_shapes(slide):
@@ -261,6 +277,31 @@ class PPTXCreator:
             if shape.has_text_frame and shape.text_frame.text == "":
                 shape.element.getparent().remove(shape.element)
                 print(f"removed index {index}")
+
+    def add_content_slide(self, slide_index=1):
+        def create_hyperlink(run, shape, to_slide):  # text hyperlink not implemented in pptx-python; hack via shape
+            shape.click_action.target_slide = to_slide
+            run.hyperlink.address = shape.click_action.hyperlink.address
+            run.hyperlink._hlinkClick.action = shape.click_action.hyperlink._hlink.action
+            run.hyperlink._hlinkClick.rId = shape.click_action.hyperlink._hlink.rId
+            shape.click_action.target_slide = None
+
+        content_entries = []
+
+        for slide in self.prs.slides:
+            content_entries.append((slide.shapes.title.text, slide))
+
+        result = self.add_slide("Content")
+        content_text_box = self.add_text_box(result, "", PPTXPosition(0.1, 0.2))
+        for text, slide in content_entries:
+            paragraph = content_text_box.text_frame.add_paragraph()
+            run = paragraph.add_run()
+            run.text = text
+            create_hyperlink(run, content_text_box, slide)
+
+        self.move_slide(result, slide_index)
+
+        return result
 
 
 if __name__ == '__main__':
