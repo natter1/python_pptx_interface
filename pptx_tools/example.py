@@ -41,7 +41,7 @@ def run():
     # test()
     pp = PPTXCreator(TemplateExample())
 
-    title_slide = pp.create_title_slide("Example presentation")
+    title_slide = pp.add_title_slide("Example presentation")
     font = font_title()
     font.write_shape(title_slide.shapes.title)
 

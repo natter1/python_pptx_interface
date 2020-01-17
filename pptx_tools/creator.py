@@ -3,14 +3,19 @@ This module provides an easier Interface to create *.pptx presentations using th
 @author: Nathanael Jöhrmann
 """
 import io
+from typing import Type, Optional
 
-from pptx import Presentation
+from matplotlib.figure import Figure
+from pptx.presentation import Presentation
 from pptx.shapes.autoshape import Shape
+from pptx.shapes.picture import Picture
+from pptx.text.text import _Run
 from pptx.util import Inches
 from pptx.enum.text import MSO_AUTO_SIZE
-from pptx.slide import Slide
+from pptx.slide import Slide, SlideLayout
 
 from pptx_tools.font_style import PPTXFontStyle
+from pptx_tools.templates import AbstractTemplate
 
 
 class PPTXPosition:
@@ -96,73 +101,66 @@ class PPTXPosition:
 class PPTXCreator:
     """
     This Class provides an easy interface to create a PowerPoint presentation.
-        - default_position elements as fraction of slide height/width
-        - add matplotlib figures
+        - PPTXPosion is used to position new shapes (allowing position as fraction of slide height/width)
         - use pptx templates (in combination with templates.py)
+        - removes unused placeholder from added slides
     """
-
-    def __init__(self, template=None):
-        """
-        :param template:
-        :param title:
-        """
-        self.slides = []
-        self.template = None
-        self.prs = None
-        self.title_layout = None
-        self.default_layout = None
-        self.create_presentation(template)
+    # disable typechecker, because None values are not allowed for attributes, but needed to create them in __init__
+    # Correct values are set when calling self._create_presentation()
+    # noinspection PyTypeChecker
+    def __init__(self, template: Optional[Type[AbstractTemplate]] = None):
+        self.slides: list = []
+        self.template: Type[AbstractTemplate] = None
+        self.prs: Presentation = None
+        self.title_layout: SlideLayout = None
+        self.default_layout: SlideLayout = None
+        self._create_presentation(template)
         self.default_position = PPTXPosition(presentation=self.prs)
 
-
-    def fraction_width_to_inch(self, fraction: float) -> Inches:
+    def _fraction_width_to_inch(self, fraction: float) -> Inches:
         """
         Returns a width in inches calculated as a fraction of total slide-width.
-        :param fraction: float
-        :return: Calculated Width in inch
         """
         result = Inches(self.prs.slide_width.inches * fraction)
         return result
 
-    def fraction_height_to_inch(self, fraction: float) -> Inches:
+    def _fraction_height_to_inch(self, fraction: float) -> Inches:
         """
         Returns a height in inches calculated as a fraction of total slide-height.
-        :param fraction: float
-        :return: Calculated Width in inch
         """
         return Inches(self.prs.slide_height.inches * fraction)
 
-    def save(self, filename: str = "delme.pptx") -> None:
+    def save(self, filename: str) -> None:
         """
         Saves the presentation under the given filename.
-        :param filename: string
-        :return: None
         """
         self.prs.save(filename)
 
-    def create_presentation(self, template=None):
+    def _create_presentation(self, template=None) -> None:
         """
         Create a new presentation (using optional template)
         """
         if template:
-            self.create_presentation_from_template(template)
+            self._create_presentation_from_template(template)
         else:
             self.prs = Presentation()
             self.title_layout = self.prs.slide_masters[0].slide_layouts[0]
             self.default_layout = self.prs.slide_masters[0].slide_layouts[0]
 
-    def create_presentation_from_template(self, template) -> None:
+    def _create_presentation_from_template(self, template: Type[AbstractTemplate]) -> None:
         self.template = template
         self.prs = template.prs
         self.title_layout = template.title_layout
         self.default_layout = template.default_layout
 
-    def create_title_slide(self, title, layout=None) -> Slide:
+    def add_title_slide(self, title: str, layout: SlideLayout = None) -> Slide:
+        """Adds a new slide to presentation. If now layout is given, title_layout is used."""
         if not layout:
             layout = self.title_layout
         return self.add_slide(title, layout)
 
-    def add_slide(self, title, layout=None) -> Slide:
+    def add_slide(self, title: str, layout=None) -> Slide:
+        """Adds a new slide to presentation. If now layout is given, default_layout is used."""
         if not layout:
             layout = self.default_layout
         slide = self.prs.slides.add_slide(layout)
@@ -171,16 +169,12 @@ class PPTXCreator:
         self.remove_unpopulated_shapes(slide)
         return slide
 
-    def write_position_in_kwargs(self, left_rel=0.0, top_rel=0.0, kwargs={}):
+    def _write_position_in_kwargs(self, kwargs: dict, left_rel: float = 0.0, top_rel: float = 0.0) -> None:
         """
         This method modifies(!) the argument kwargs by adding or changing the entries "left" and "top".
-        :param left_rel:
-        :param top_rel:
-        :param kwargs:
-        :return: None
         """
-        left = self.fraction_width_to_inch(left_rel)
-        top = self.fraction_height_to_inch(top_rel)
+        left = self._fraction_width_to_inch(left_rel)
+        top = self._fraction_height_to_inch(top_rel)
 
         if not "left" in kwargs:
             kwargs["left"] = left
@@ -191,16 +185,13 @@ class PPTXCreator:
         else:
             kwargs["top"] = kwargs["top"] + top
 
-    def add_matplotlib_figure(self, fig, slide, pptx_position: PPTXPosition = None, zoom: float = 1.0, **kwargs):
+    def add_matplotlib_figure(self, fig: Figure, slide: Slide,
+                              pptx_position: PPTXPosition = None,
+                              zoom: float = 1.0,
+                              **kwargs) -> Picture:
         """
-        Add a motplotlib figure fig to slide with index slide_index. With top_rel and left_rel
-        it is possible to default_position the figure in Units of slide height/width (float in range [0, 1].
-        :param pptx_position: PPTXPosition
-        :param fig: a matplolib figure
-        :param slide: slide in presentation on which to insert fig
-        :param zoom: sets image scaling in PowerPoint; only used if width not in kwargs (default = 1.0)
-        :param kwargs:
-        :return: pptx.shapes.picture.Picture
+        Add a motplotlib figure to slide and position it via pptx_position.
+        Optional parameter zoom sets image scaling in PowerPoint; only used if width not in kwargs (default = 1.0)
         """
         if "width" not in kwargs:
             kwargs["width"] = Inches(fig.get_figwidth() * zoom)
@@ -212,9 +203,14 @@ class PPTXCreator:
             pic = slide.shapes.add_picture(output, **kwargs)  # 0, 0)#, left, top)
         return pic
 
-    def add_text_box(self, slide, text: str, position: PPTXPosition, font: PPTXFontStyle = None) -> Shape:
-        """ Adds a tex box with given text using given position and font."""
+    def add_text_box(self, slide, text: str, position: PPTXPosition = None, font: PPTXFontStyle = None) -> Shape:
+        """
+        Adds a text box with given text using given position and font.
+        Uses self.default_position if no position is given.
+        """
         width = height = Inches(1)  # no auto-resizing of shape -> has to be done inside PowerPoint
+        if position is None:
+            position = self.default_position
         result = slide.shapes.add_textbox(**position.dict(), width=width, height=height)
         result.text_frame.auto_size = MSO_AUTO_SIZE.SHAPE_TO_FIT_TEXT
         result.text_frame.text = text  # first paragraph
@@ -237,12 +233,10 @@ class PPTXCreator:
             _sldIdLst.insert(new_index, to_move)
 
     @staticmethod
-    def remove_unpopulated_shapes(slide):
+    def remove_unpopulated_shapes(slide: Slide):
         """
         Removes empty placeholders (e.g. due to layout) from slide.
         Further testing needed.
-        :param slide: pptx.slide.Slide
-        :return:
         """
         for index in reversed(range(len(slide.shapes))):
             shape = slide.shapes[index]
@@ -251,14 +245,17 @@ class PPTXCreator:
                 shape.element.getparent().remove(shape.element)
                 print(f"removed index {index}")
 
-    def add_content_slide(self, slide_index=1):
-        def create_hyperlink(run, shape, to_slide):  # text hyperlink not implemented in pptx-python; hack via shape
-            shape.click_action.target_slide = to_slide
-            run.hyperlink.address = shape.click_action.hyperlink.address
-            run.hyperlink._hlinkClick.action = shape.click_action.hyperlink._hlink.action
-            run.hyperlink._hlinkClick.rId = shape.click_action.hyperlink._hlink.rId
-            shape.click_action.target_slide = None
+    @staticmethod
+    def create_hyperlink(run: _Run, shape: Shape, to_slide: Slide):  # text hyperlink not implemented in pptx-python
+        """Makes the given run a hyperlink to to_slide."""
+        shape.click_action.target_slide = to_slide
+        run.hyperlink.address = shape.click_action.hyperlink.address
+        run.hyperlink._hlinkClick.action = shape.click_action.hyperlink._hlink.action
+        run.hyperlink._hlinkClick.rId = shape.click_action.hyperlink._hlink.rId
+        shape.click_action.target_slide = None
 
+    def add_content_slide(self, slide_index=1):
+        """Adds a content slide with hyperlinks to all other slides and puts it to position slide_index."""
         content_entries = []
 
         for slide in self.prs.slides:
@@ -270,7 +267,7 @@ class PPTXCreator:
             paragraph = content_text_box.text_frame.add_paragraph()
             run = paragraph.add_run()
             run.text = text
-            create_hyperlink(run, content_text_box, slide)
+            self.create_hyperlink(run, content_text_box, slide)
 
         self.move_slide(result, slide_index)
 
