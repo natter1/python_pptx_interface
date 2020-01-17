@@ -3,16 +3,16 @@ This module provides an easier Interface to create *.pptx presentations using th
 @author: Nathanael Jöhrmann
 """
 import io
-from typing import Type, Optional
+from typing import Type, Optional, List, Iterable
 
 from matplotlib.figure import Figure
+from pptx.enum.text import MSO_AUTO_SIZE
 from pptx.presentation import Presentation
 from pptx.shapes.autoshape import Shape
 from pptx.shapes.picture import Picture
+from pptx.slide import Slide, SlideLayout
 from pptx.text.text import _Run
 from pptx.util import Inches
-from pptx.enum.text import MSO_AUTO_SIZE
-from pptx.slide import Slide, SlideLayout
 
 from pptx_tools.font_style import PPTXFontStyle
 from pptx_tools.templates import AbstractTemplate
@@ -97,7 +97,6 @@ class PPTXPosition:
         return Inches(self.prs.slide_height.inches * fraction)
 
 
-# todo: template_file to Enum in pptx_template with all available templates
 class PPTXCreator:
     """
     This Class provides an easy interface to create a PowerPoint presentation.
@@ -216,6 +215,36 @@ class PPTXCreator:
         result.text_frame.text = text  # first paragraph
         if font:
             font.write_shape(result)
+        return result
+
+    def _get_rows_cols(self, table_data: Iterable[Iterable[any]]):
+        """Used to get number of rows and cols from table data"""
+        rows = sum(1 for e in table_data)
+
+        cols = 0
+        for row in table_data:
+            length = sum(1 for e in row)
+            cols = max(cols, length)
+
+        return rows, cols
+
+    def add_table(self, slide: Slide, table_data: Iterable[Iterable[any]], position: PPTXPosition = None, style = None) -> Shape:
+        """
+        table_data: outer iter -> rows, inner iter cols
+        """
+        rows, cols = self._get_rows_cols(table_data)
+        if position is None:
+            position = self.default_position
+
+        #     def add_table(self, rows, cols, left, top, width, height):
+        result = slide.shapes.add_table(rows, cols, position.left, position.top, Inches(cols), Inches(rows))
+
+        table = result.table
+        row = col = 0
+        for ir, row in enumerate(table_data):
+            for ic, entry in enumerate(row):
+                table.cell(ir, ic).text = f"{entry}"
+                print(ir, ic, entry)
         return result
 
     def move_slide(self, slide: Slide, new_index: int):

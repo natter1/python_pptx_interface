@@ -1,21 +1,12 @@
-from pptx import Presentation
-
 from pptx_tools.creator import PPTXCreator, PPTXPosition
-from pptx_tools.style_sheets import font_default, font_title, font_slide_title, font_sub_title
+from pptx_tools.style_sheets import font_title
 from pptx_tools.templates import TemplateExample
 
 try:
     import matplotlib.pyplot as plt
-
     matplotlib_installed = True
 except ImportError as e:
     matplotlib_installed = False
-
-
-def test():
-    pp = PPTXCreator()
-    pp.prs = Presentation("example.pptx")
-    # ...
 
 
 def create_demo_figure():
@@ -38,14 +29,13 @@ def create_demo_figure():
 
 
 def run():
-    # test()
     pp = PPTXCreator(TemplateExample())
 
     title_slide = pp.add_title_slide("Example presentation")
     font = font_title()
-    font.write_shape(title_slide.shapes.title)
+    font.write_shape(title_slide.shapes.title)  # you can change font attributes of paragraphs in shape via PPTXFontTool
 
-    pp.add_slide("page2")
+    slide2 = pp.add_slide("page2")
     pp.add_slide("page3")
     pp.add_slide("page4")
     content_slide = pp.add_content_slide()
@@ -53,7 +43,14 @@ def run():
     if matplotlib_installed:
         fig = create_demo_figure()
         pp.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.3, 0.4))
+        pp.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.7, 0.4), zoom=0.4)
 
+    table_data = []
+    table_data.append([1, 2])  # rows can have different length
+    table_data.append([4, slide2, 6])  # there is specific type needed for entries (implemented as text=f"{entry}")
+    table_data.append(["", 8, 9])
+
+    pp.add_table(slide2, table_data)
     pp.save("example.pptx")
 
     #
