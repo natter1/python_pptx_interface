@@ -1,5 +1,11 @@
 python_pptx_interface
 =====================
+.. image:: https://img.shields.io/pypi/v/python_pptx_interface.svg
+    :target: https://pypi.org/project/python_pptx_interface/
+
+.. image:: http://img.shields.io/:license-MIT-blue.svg?style=flat-square
+    :target: http://badges.MIT-license.org
+
 `python-pptx <https://github.com/scanny/python-pptx.git>`_ is a great module to create pptx-files.
 But it it can be challenging to master the complex syntax. This module tries to present an easier interface
 for python-pptx to create simple PowerPoint files. It also add some still missing features like moving slides,

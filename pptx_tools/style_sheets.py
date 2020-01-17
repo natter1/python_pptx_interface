@@ -45,12 +45,3 @@ def paragraph_default():
     result.font = font_default()
     result.alignment = PP_PARAGRAPH_ALIGNMENT.LEFT
 
-# from typing import Optional
-#
-# from pptx_tools.font_style import PPTXFontStyle
-#
-#
-# class PPTXStyleSheet:
-#     def __init__(self):
-#         self.font: Optional[PPTXFontStyle] = None
-#         self.paragraph = None

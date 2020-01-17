@@ -11,8 +11,6 @@ except ImportError as e:
 
 def create_demo_figure():
     figure: plt.Figure = plt.figure(figsize=(3.4, 1.8), dpi=100, facecolor='w', edgecolor='w', frameon=True)
-    # figure.patch  # The Rectangle instance representing the figure background patch.
-    # figure.patch.set_visible(False)
     figure.patch.set_alpha(0.5)
     sub_title = figure.suptitle('matplotlib figure', fontsize=14, fontweight='bold', color='red')
     sub_title.set_color('green')
@@ -38,7 +36,7 @@ def run():
     slide2 = pp.add_slide("page2")
     pp.add_slide("page3")
     pp.add_slide("page4")
-    content_slide = pp.add_content_slide()
+    pp.add_content_slide()
 
     if matplotlib_installed:
         fig = create_demo_figure()
@@ -52,25 +50,6 @@ def run():
 
     pp.add_table(slide2, table_data)
     pp.save("example.pptx")
-
-    #
-    # plotter = PI88Plotter(PI88Measurement("..\\resources\\AuSn_Creep\\1000uN 01 LC.tdm"))
-    # fig = plotter.get_load_displacement_plot()
-    # fig_width = fig.get_figwidth()
-    # zoom = 1
-    # picture = pptx.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.2, 0.25),
-    #                                      width=Inches(fig_width * zoom))
-    #
-    #
-    # zoom = 0.2
-    # pptx.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.7, 0.25), width=Inches(fig_width * zoom))
-    #
-    # pptx.add_text_box(slide2, "This is the first paragraph\n... and here comes the second", PPTXPosition(0.7, 0.7))
-    # pptx.save("delme_pptx_creator_demo.pptx")
-
-    # reposition picture:
-    # picture.left = Inches(1)
-    # picture.top = Inches(3)
 
 
 if __name__ == '__main__':

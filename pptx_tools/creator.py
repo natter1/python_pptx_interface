@@ -251,14 +251,12 @@ class PPTXCreator:
         """Moves the given slide to position new_index."""
         _sldIdLst = self.prs.slides._sldIdLst
 
-        old_index = None
-        for index, entry in enumerate((_sldIdLst.sldId_lst)):
+        to_move = None
+        for entry in _sldIdLst.sldId_lst:
             if entry.id == slide.slide_id:
-                old_index = index
+                to_move = entry
 
-        if old_index is not None:
-            to_move = _sldIdLst[old_index]
-            list(_sldIdLst).pop(old_index)
+        if to_move is not None:
             _sldIdLst.insert(new_index, to_move)
 
     @staticmethod
