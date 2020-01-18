@@ -21,6 +21,12 @@ def font_default():  # font for normal text
     return result
 
 
+def font_small_text():
+    result = font_default()
+    result.size -= 2
+    return result
+
+
 def font_title():  # font for presentation title
     result = font_default()
     result.size = 32

@@ -87,3 +87,24 @@ class PPTXFontStyle:
         # _to.name = _from.name
         # _to.size = _from.size
         # _to.underline = _from.underline
+
+    def set(self, bold: Optional[bool] = None,
+            italic: Optional[bool] = None,
+            language_id: MSO_LANGUAGE_ID = None,
+            name: Optional[str] = None,
+            size: Optional[int] = None,
+            underline: Union[MSO_TEXT_UNDERLINE_TYPE, bool, None] = None
+            ):
+        """Convienience method to set several font attributes together."""
+        if bold is not None:
+            self.bold = bold
+        if italic is not None:
+            self.italic = italic
+        if language_id is not None:
+            self.language_id = language_id
+        if name is not None:
+            self.name = name
+        if size is not None:
+            self.size = size
+        if underline is not None:
+            self.underline = underline

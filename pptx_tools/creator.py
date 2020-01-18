@@ -10,11 +10,10 @@ from pptx_tools import utils
 
 try:
     from matplotlib.figure import Figure
-
-    matplotlib_installed = True
+    has_matplotlib = True
 except ImportError as e:
-    matplotlib_installed = False
-    Figure = object  # fix, to prevent Typing to force matplotlib installation
+    has_matplotlib = False
+
 
 import pptx
 from pptx.enum.text import MSO_AUTO_SIZE
@@ -89,6 +88,15 @@ class PPTXPosition:
         :return: dictionary
         """
         return self.dict_for_position(self.left_rel, self.top_rel, self.left, self.top)
+
+    def tuple(self):
+        """
+        This method returns a args tuple containing "left" and "top".
+        :return: tuple
+        """
+        left = self.dict()["left"]
+        top = self.dict()["top"]
+        return left, top
 
     def fraction_width_to_inch(self, fraction):
         """
@@ -190,7 +198,7 @@ class PPTXCreator:
         else:
             kwargs["top"] = kwargs["top"] + top
 
-    def add_matplotlib_figure(self, fig: Figure, slide: Slide,
+    def add_matplotlib_figure(self, fig: 'Figure', slide: Slide,
                               pptx_position: PPTXPosition = None,
                               zoom: float = 1.0,
                               **kwargs) -> Picture:
@@ -198,6 +206,9 @@ class PPTXCreator:
         Add a motplotlib figure to slide and position it via pptx_position.
         Optional parameter zoom sets image scaling in PowerPoint; only used if width not in kwargs (default = 1.0)
         """
+        if not has_matplotlib:
+            raise ModuleNotFoundError("Adding a matplotlib figure needs module matplotlib to be installed.")
+
         if "width" not in kwargs:
             kwargs["width"] = Inches(fig.get_figwidth() * zoom)
         if not pptx_position:
@@ -242,12 +253,10 @@ class PPTXCreator:
         rows, cols = self._get_rows_cols(table_data)
         if position is None:
             position = self.default_position
-
-        #     def add_table(self, rows, cols, left, top, width, height):
-        result = slide.shapes.add_table(rows, cols, position.left, position.top, Inches(cols), Inches(rows))
+        left, top = position.tuple()
+        result = slide.shapes.add_table(rows, cols, left, top, width=Inches(cols), height=Inches(0.5*rows))
 
         table = result.table
-        row = col = 0
         for ir, row in enumerate(table_data):
             for ic, entry in enumerate(row):
                 table.cell(ir, ic).text = f"{entry}"

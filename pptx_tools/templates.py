@@ -53,7 +53,7 @@ class TemplateExample(AbstractTemplate):
 
         date_time = datetime.now().strftime("%d %B, %Y")
         self.set_author("Nathanael Jöhrmann", city="Chemnitz", date=date_time)
-        self.set_website("https://github.com/natter1/pi88reader")
+        self.set_website("https://github.com/natter1/python_pptx_interface")
 
     def set_author(self, name, city=None, date=None):
         text = ""
