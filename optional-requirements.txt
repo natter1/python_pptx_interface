@@ -1,0 +1,2 @@
+matplotlib  # needed only for PPTXCreator.add_matplotlib_figure
+comtypes  # needed to enable save to pdf - this module is windows only; also needs installed PowerPoint

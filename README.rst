@@ -16,12 +16,19 @@ The main parts are:
   * PPTXFontTool: Helps to set/change/copy fonts.
   * AbstractTemplate: Base class for all custom templates (enforce necessary attributes)
   * TemplateExample: Example class to show how to work with custom templates
+  * utils.py - a collection of useful functions, eg. to generate PDF or PNG from \*.pptx (needs PowerPoint installed)
 
 Requirements
 ------------
 
 * Python >= 3.6 (f-strings)
 * python-pptx
+
+Optional requirements
+---------------------
+* matplotlib (adding matplotlib figures to presentation)
+* comtypes  (create pdfs or pngs)
+* PowerPoint (create pdfs or pngs)
 
 Contribution
 ------------
@@ -119,6 +126,26 @@ how many rows the table will have. The longest inner iterable is used to get the
         pp.save("example.pptx")
 
 Finally, we save the example as example.pptx.
+
+If you are on windows an have PowerPoint installed, you could use some additional features.
+
+.. code:: python
+
+    try:  # only on Windows with PowerPoint installed:
+        my_path = os.path.dirname(os.path.abspath(__file__))
+        filename_pptx = os.path.join(my_path, "example.pptx")
+        filename_pdf = os.path.join(my_path, "example.pdf")
+        foldername_png = os.path.join(my_path, "example_pngs")
+
+        # use absolute path, because its not clear where PowerPoint saves PDF/PNG ... otherwise
+        pp.save(filename_pptx, create_pdf=True)  # saves your pptx-file and also creates a PDF file
+        pp.save_as_pdf(filename_pdf, overwrite=True)  # saves presentation as PDF
+        pp.save_as_png(foldername_png, overwrite_folder=True)  # creates folder with PNGs of slides
+    except:
+        pass
+
+As you can see, you could use PowerPoint to save your presentation in other file formats.
+
 
 API
 ---

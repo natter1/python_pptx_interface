@@ -3,9 +3,20 @@ This module provides an easier Interface to create *.pptx presentations using th
 @author: Nathanael Jöhrmann
 """
 import io
-from typing import Type, Optional, List, Iterable
+import os
+from typing import Type, Optional, Iterable
 
-from matplotlib.figure import Figure
+from pptx_tools import utils
+
+try:
+    from matplotlib.figure import Figure
+
+    matplotlib_installed = True
+except ImportError as e:
+    matplotlib_installed = False
+    Figure = object  # fix, to prevent Typing to force matplotlib installation
+
+import pptx
 from pptx.enum.text import MSO_AUTO_SIZE
 from pptx.presentation import Presentation
 from pptx.shapes.autoshape import Shape
@@ -104,6 +115,7 @@ class PPTXCreator:
         - use pptx templates (in combination with templates.py)
         - removes unused placeholder from added slides
     """
+
     # disable typechecker, because None values are not allowed for attributes, but needed to create them in __init__
     # Correct values are set when calling self._create_presentation()
     # noinspection PyTypeChecker
@@ -129,12 +141,6 @@ class PPTXCreator:
         """
         return Inches(self.prs.slide_height.inches * fraction)
 
-    def save(self, filename: str) -> None:
-        """
-        Saves the presentation under the given filename.
-        """
-        self.prs.save(filename)
-
     def _create_presentation(self, template=None) -> None:
         """
         Create a new presentation (using optional template)
@@ -142,7 +148,7 @@ class PPTXCreator:
         if template:
             self._create_presentation_from_template(template)
         else:
-            self.prs = Presentation()
+            self.prs = pptx.Presentation()
             self.title_layout = self.prs.slide_masters[0].slide_layouts[0]
             self.default_layout = self.prs.slide_masters[0].slide_layouts[0]
 
@@ -175,11 +181,11 @@ class PPTXCreator:
         left = self._fraction_width_to_inch(left_rel)
         top = self._fraction_height_to_inch(top_rel)
 
-        if not "left" in kwargs:
+        if "left" not in kwargs:
             kwargs["left"] = left
         else:
             kwargs["left"] = kwargs["left"] + left
-        if not "top" in kwargs:
+        if "top" not in kwargs:
             kwargs["top"] = top
         else:
             kwargs["top"] = kwargs["top"] + top
@@ -228,7 +234,8 @@ class PPTXCreator:
 
         return rows, cols
 
-    def add_table(self, slide: Slide, table_data: Iterable[Iterable[any]], position: PPTXPosition = None, style = None) -> Shape:
+    def add_table(self, slide: Slide, table_data: Iterable[Iterable[any]], position: PPTXPosition = None,
+                  style=None) -> Shape:
         """
         table_data: outer iter -> rows, inner iter cols
         """
@@ -270,7 +277,7 @@ class PPTXCreator:
             # if shape.is_placeholder and shape.text_frame.text == "":
             if shape.has_text_frame and shape.text_frame.text == "":
                 shape.element.getparent().remove(shape.element)
-                print(f"removed index {index}")
+                # print(f"removed index {index}")
 
     @staticmethod
     def create_hyperlink(run: _Run, shape: Shape, to_slide: Slide):  # text hyperlink not implemented in pptx-python
@@ -299,3 +306,28 @@ class PPTXCreator:
         self.move_slide(result, slide_index)
 
         return result
+
+    def save(self, filename: str, create_pdf: bool = False, overwrite=False):
+        """
+        Saves the presentation under the given filename.
+        """
+        if os.path.isfile(filename) and not overwrite:
+            print(f"File {filename} already exists. Set overwrite=True, if you want to overwrite file.")
+            return
+
+        self.prs.save(filename)
+
+        if create_pdf:
+            self.save_as_pdf(filename[:-4] + "pdf", overwrite)
+
+    def save_as_pdf(self, filename: str, overwrite=False) -> bool:
+        """
+        Saves the presentation as pdf under the given filename. Needs PowerPoint installed.
+        """
+        return utils.save_as_pdf(self.prs, filename, overwrite)
+
+    def save_as_png(self, filename, overwrite_folder=False) -> bool:
+        """
+        Saves the presentation as PNG's in the given folder. Needs PowerPoint installed.
+        """
+        return utils.save_as_png(self.prs, filename, overwrite_folder)
