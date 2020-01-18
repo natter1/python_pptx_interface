@@ -1,7 +1,7 @@
 import os
 
 from pptx_tools.creator import PPTXCreator, PPTXPosition
-from pptx_tools.style_sheets import font_title, font_small_text, font_default
+from pptx_tools.style_sheets import font_title, font_default
 from pptx_tools.templates import TemplateExample
 
 from pptx.enum.lang import MSO_LANGUAGE_ID
@@ -43,7 +43,7 @@ def run(save_path: str = ""):
 
     title_slide = pp.add_title_slide("Example presentation")
     font = font_title()
-    font.write_shape(title_slide.shapes.title)  # you can change font attributes of paragraphs in shape via PPTXFontTool
+    font.write_shape(title_slide.shapes.title)  # change font attributes for all paragraphs in shape
 
     slide2 = pp.add_slide("page2")
     pp.add_slide("page3")
@@ -77,7 +77,9 @@ def run(save_path: str = ""):
     if matplotlib_installed:
         fig = create_demo_figure()
         pp.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.3, 0.4))
-        pp.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.7, 0.4), zoom=0.4)
+        pp.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.3, 0.4, fig.get_figwidth(), -1.0), zoom=0.4)
+        pp.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.3, 0.4, fig.get_figwidth(), 0.0), zoom=0.5)
+        pp.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.3, 0.4, fig.get_figwidth(), 1.5), zoom=0.6)
 
     pp.save("example.pptx")
 

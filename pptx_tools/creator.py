@@ -78,8 +78,8 @@ class PPTXPosition:
         :param top: float [inch]
         :return: dictionary
         """
-        left = self.fraction_width_to_inch(left_rel) + left
-        top = self.fraction_height_to_inch(top_rel) + top
+        left = self.fraction_width_to_inch(left_rel) + Inches(left)
+        top = self.fraction_height_to_inch(top_rel) + Inches(top)
         return {"left": left, "top": top}
 
     def dict(self):
