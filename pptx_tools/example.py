@@ -1,6 +1,7 @@
 import os
 
 from pptx_tools.creator import PPTXCreator, PPTXPosition
+from pptx_tools.font_style import PPTXFontStyle
 from pptx_tools.style_sheets import font_title, font_default
 from pptx_tools.templates import TemplateExample
 
@@ -37,14 +38,17 @@ def create_demo_figure():
 def run(save_dir: str):
     pp = PPTXCreator(TemplateExample())
 
+    PPTXFontStyle.lanaguage_id = MSO_LANGUAGE_ID.ENGLISH_UK
+    PPTXFontStyle.name = "Roboto"
+
     title_slide = pp.add_title_slide("Example presentation")
-    font = font_title()
+    font = font_title()  # returns a PPTXFontStyle instance with bold font and size = 32 Pt
     font.write_shape(title_slide.shapes.title)  # change font attributes for all paragraphs in shape
 
     slide2 = pp.add_slide("page2")
     pp.add_slide("page3")
     pp.add_slide("page4")
-    pp.add_content_slide()
+    pp.add_content_slide()  # add slide with hyperlinks to all other slides
 
     text = "This text has three paragraphs. This is the first.\n" \
            "Das ist der zweite ...\n" \
@@ -55,6 +59,7 @@ def run(save_dir: str):
 
     my_font.set(size=22, bold=True, language_id=MSO_LANGUAGE_ID.GERMAN)
     my_font.write_paragraph(text_shape.text_frame.paragraphs[1])
+    my_font._write_font_experimentell(text_shape.text_frame.paragraphs[1].font)
 
     my_font.set(size=18, bold=False, italic=True, name="Vivaldi",
                 language_id=MSO_LANGUAGE_ID.ENGLISH_UK,

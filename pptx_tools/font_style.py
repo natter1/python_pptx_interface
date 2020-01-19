@@ -18,13 +18,19 @@ class PPTXFontStyle:
     always needs an existing Text/Character/... for initializing and also basic functionality like assignment
     of one font to another is missing.
     """
+    # default language anf font
+    lanaguage_id: MSO_LANGUAGE_ID = MSO_LANGUAGE_ID.ENGLISH_UK  # MSO_LANGUAGE_ID.GERMAN
+    name = "Roboto"  # "Arial"  # "Arial Narrow"
+
     def __init__(self):
         #  If set to None, the bold and italic ... setting is cleared and is inherited
         #  from an enclosing shape’s setting, or a setting in a style or master
         self.bold: Optional[bool] = None
         self.italic: Optional[bool] = None
-        self.language_id: MSO_LANGUAGE_ID = MSO_LANGUAGE_ID.NONE  # ENGLISH_UK; ENGLISH_US; ESTONIAN; GERMAN; ...
-        self.name: Optional[str] = None
+
+        # use class attribute; instance attribute only when changed by user
+        # self.language_id: MSO_LANGUAGE_ID = MSO_LANGUAGE_ID.NONE  # ENGLISH_UK; ENGLISH_US; ESTONIAN; GERMAN; ...
+        # self.name: Optional[str] = None
 
         # saved in units of Pt (not EMU like pptx.text.text.Font) - converting to EMU is done during write_to_font
         self.size: Optional[int] = None  # 18
@@ -108,3 +114,17 @@ class PPTXFontStyle:
             self.size = size
         if underline is not None:
             self.underline = underline
+
+        # -----------------------------------------------------------------------------------------------
+        # ----------------------------------- experimentell methods -------------------------------------
+        # -----------------------------------------------------------------------------------------------
+    def _write_font_experimentell(self, font: Font,all_caps: bool = True, strikethrough: bool = True):
+        if all_caps:
+            font._element.attrib['cap'] = "all"
+        else:
+            pass
+
+        if strikethrough:
+            font._element.attrib['strike'] = "sngStrike"
+        else:
+            pass

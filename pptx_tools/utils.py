@@ -5,9 +5,12 @@ This module is a collection of helpful misc. functions.
 # from pptx.presentation import Presentation
 import _ctypes
 import os
-from typing import Generator
 
-from comtypes.client import Constants, CreateObject
+try:
+    from comtypes.client import Constants, CreateObject
+    has_comptypes=True
+except:
+    has_comptypes=False
 
 import pptx
 import tempfile
@@ -42,17 +45,22 @@ class TemporaryPPTXFile:
 # ----------------------------------------------------------------------------------------------------------------------
 # The following functions need an installed PowerPoint and will only work on windows systems.
 # ----------------------------------------------------------------------------------------------------------------------
-def save_pptx_as_png(png_filename: str, pptx_filename, overwrite_folder: bool = False):
-    if os.path.isdir(png_filename) and not overwrite_folder:
-        print(f"Folder {png_filename} already exists. "
+def save_pptx_as_png(png_foldername: str, pptx_filename: str, overwrite_folder: bool = False):
+
+    if not has_comptypes:
+        print("Comptype module needed to save PDFs.")
+        return
+
+    if os.path.isdir(png_foldername) and not overwrite_folder:
+        print(f"Folder {png_foldername} already exists. "
               f"Set overwrite_folder=True, if you want to overwrite folder content.")
-        return False
+        return
 
     powerpoint = CreateObject("Powerpoint.Application")
     pp_constants = Constants(powerpoint)
 
     pres = powerpoint.Presentations.Open(pptx_filename)
-    pres.SaveAs(png_filename, pp_constants.ppSaveAsPNG)
+    pres.SaveAs(png_foldername, pp_constants.ppSaveAsPNG)
     pres.close()
     if powerpoint.Presentations.Count == 0:  # only close, when no other Presentations are open!
         powerpoint.quit()
@@ -64,6 +72,10 @@ def save_pptx_as_pdf(pdf_filename: str, pptx_filename, overwrite: bool = False) 
     :param pptx_filename: filename (including path) of pptx file
     :return:
     """
+    if not has_comptypes:
+        print("Comptype module needed to save PDFs.")
+        return False
+
     if os.path.isfile(pdf_filename) and not overwrite:
         print(f"File {pdf_filename} already exists. Set overwrite=True, if you want to overwrite file.")
         return False

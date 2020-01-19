@@ -75,11 +75,18 @@ Importing matplotlib is optional - it is used to demonstrate, how to get a matpl
     def run(save_dir: str):
         pp = PPTXCreator(TemplateExample())
 
+        PPTXFontStyle.lanaguage_id = MSO_LANGUAGE_ID.ENGLISH_UK
+        PPTXFontStyle.name = "Roboto"
+
         title_slide = pp.add_title_slide("Example presentation")
-        font = font_title()
+        font = font_title()  # returns a PPTXFontStyle instance with bold font and size = 32 Pt
         font.write_shape(title_slide.shapes.title)  # change font attributes for all paragraphs in shape
 
-Now we create our presentation, add a title slide and change the font style of the title using title_font().
+Now we create our presentation with **PPTXCreator** using the **TemplateExample**.
+We also set the default font language and name of all **PPTXFontStyle** instances. This is not necessary,
+as *ENGLISH_UK* and *Roboto* are the defaults anyway. But in principle you could change these settings here,
+to fit your needs. If you create your own template class, you might also set these default parameters there.
+Finally we add a title slide and change the font style of the title using title_font().
 
 |
 |
@@ -89,9 +96,9 @@ Now we create our presentation, add a title slide and change the font style of t
         slide2 = pp.add_slide("page2")
         pp.add_slide("page3")
         pp.add_slide("page4")
-        content_slide = pp.add_content_slide()
+        content_slide = pp.add_content_slide()  # add slide with hyperlinks to all other slides
 
-Next, we add three more slides, and create a content slide with hyperlinks to all other slides. By default,
+Next, we add three slides, and create a content slide with hyperlinks to all other slides. By default,
 it is put to the second position (you could specify the position using the optional slide_index parameter).
 
 .. figure:: https://github.com/natter1/python_pptx_interface/raw/master/docs/images/example01_content_slide.png
@@ -107,7 +114,7 @@ Lets add some more stuff to the title slide.
     text = "This text has three paragraphs. This is the first.\n" \
            "Das ist der zweite ...\n" \
            "... and the third."
-    my_font = font_default()
+    my_font = font_default()  # font size 14
     my_font.size = 16
     text_shape = pp.add_text_box(title_slide, text, PPTXPosition(0.02, 0.24), my_font)
 
