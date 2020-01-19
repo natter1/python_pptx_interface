@@ -8,12 +8,12 @@ python_pptx_interface
 
 `python-pptx <https://github.com/scanny/python-pptx.git>`_ is a great module to create pptx-files.
 But it it can be challenging to master the complex syntax. This module tries to present an easier interface
-for python-pptx to create simple PowerPoint files. It also add some still missing features like moving slides,
+for python-pptx to create simple PowerPoint files. It also adds some still missing features like moving slides,
 create links to other slides or remove unused place-holders.
 
 The main parts are:
   * PPTXCreator: Create pptx-File from template, incluing methods to add text, tables, figures etc.
-  * PPTXFontTool: Helps to set/change/copy fonts.
+  * PPTXFontStyle: Helps to set/change/copy fonts.
   * AbstractTemplate: Base class for all custom templates (enforce necessary attributes)
   * TemplateExample: Example class to show how to work with custom templates
   * utils.py - a collection of useful functions, eg. to generate PDF or PNG from \*.pptx (needs PowerPoint installed)
