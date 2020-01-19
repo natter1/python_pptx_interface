@@ -19,7 +19,7 @@ class PPTXFontStyle:
     of one font to another is missing.
     """
     # default language anf font
-    lanaguage_id: MSO_LANGUAGE_ID = MSO_LANGUAGE_ID.ENGLISH_UK  # MSO_LANGUAGE_ID.GERMAN
+    language_id: MSO_LANGUAGE_ID = MSO_LANGUAGE_ID.ENGLISH_UK  # MSO_LANGUAGE_ID.GERMAN
     name = "Roboto"  # "Arial"  # "Arial Narrow"
 
     def __init__(self):
