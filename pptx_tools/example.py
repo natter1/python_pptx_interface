@@ -14,7 +14,6 @@ except ImportError as e:
     matplotlib_installed = False
 
 
-
 def create_demo_figure():
     if not matplotlib_installed:
         return
@@ -35,10 +34,7 @@ def create_demo_figure():
     return figure
 
 
-def run(save_path: str = ""):
-    if save_path == "":
-        save_path = os.path.abspath(__file__)
-
+def run(save_path: str):
     pp = PPTXCreator(TemplateExample())
 
     title_slide = pp.add_title_slide("Example presentation")
@@ -81,7 +77,7 @@ def run(save_path: str = ""):
         pp.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.3, 0.4, fig.get_figwidth(), 0.0), zoom=0.5)
         pp.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.3, 0.4, fig.get_figwidth(), 1.5), zoom=0.6)
 
-    pp.save("example.pptx")
+    pp.save(os.path.join(save_path, "example.pptx"))
 
     try:  # only on Windows with PowerPoint installed:
         filename_pptx = os.path.join(save_path, "example.pptx")

@@ -34,7 +34,7 @@ that you could run like
 
     import pptx_tools.example as example
 
-    example.run()
+    example.run(save_path=my_path)  # you have to specify the folder where to save the presentation
 
 This will create an example.pptx, using some of the key-features of python-pptx-interface. Lets have a closer look:
 
@@ -57,7 +57,7 @@ This will create an example.pptx, using some of the key-features of python-pptx-
 
 First we need to import some stuff. **PPTXCreator** is the class used to create a \*.pptx file.
 **PPTXPosition** allows as to position shapes in more intuitive units of slide width/height.
-**font_title** is a function returning a FontStyleTool instance. We will use it to change the formatting of the title shape.
+**font_title** is a function returning a PPTXFontStyle instance. We will use it to change the formatting of the title shape.
 **TemplateExample** is a class providing access to the example-template.pptx included in python-pptx-interface
 and also setting some texts on the master slides like author, date and website. You could use it as reference
 on how to use your own template files by subclassing AbstractTemplate
@@ -67,6 +67,7 @@ on how to use your own template files by subclassing AbstractTemplate
 
 Importing matplotlib is optional - it is used to demonstrate, how to get a matplotlib figure into your presentation.
 
+|
 |
 
 .. code:: python
@@ -80,6 +81,7 @@ Importing matplotlib is optional - it is used to demonstrate, how to get a matpl
 
 Now we create our presentation, add a title slide and change the font style of the title using title_font().
 
+|
 |
 
 .. code:: python
@@ -95,6 +97,7 @@ it is put to the second position (you could specify the position using the optio
 .. figure:: https://github.com/natter1/python_pptx_interface/raw/master/docs/images/example01_content_slide.png
     :width: 500pt
 
+|
 |
 
 Lets add some more stuff to the title slide.
@@ -113,8 +116,10 @@ Optionally it accepts a PPTXPosition and a PPTXFont. With PPTXPosition(0.02, 0.2
 we position the figure 0.02 slide widths from left and 0.24 slide heights from top.
 
 |
+|
 
 .. code:: python
+
     my_font.set(size=22, bold=True, language_id=MSO_LANGUAGE_ID.GERMAN)
     my_font.write_paragraph(text_shape.text_frame.paragraphs[1])
 
@@ -123,9 +128,10 @@ we position the figure 0.02 slide widths from left and 0.24 slide heights from t
                 underline=MSO_TEXT_UNDERLINE_TYPE.WAVY_DOUBLE_LINE)
     my_font.write_paragraph(text_shape.text_frame.paragraphs[2])
 
-We can use my_font to format individual paragraphs in a text_frame with **PPTXFont.write_paragraph()**.
-Via **PPTXFont.set()** easily customize the font before using it.
+We can use my_font to format individual paragraphs in a text_frame with **PPTXFontStyle.write_paragraph()**.
+Via **PPTXFontStyle.set()** easily customize the font before using it.
 
+|
 |
 
 .. code:: python
@@ -141,6 +147,7 @@ we can also easily add a table. First we define all the data we want to put in t
 But add_table is more flexible and can work with anything, that is an Iterable of Iterable. The outer iterable defines,
 how many rows the table will have. The longest inner iterable is used to get the number of columns.
 
+|
 |
 
 .. code:: python
@@ -158,6 +165,7 @@ With PPTXPosition(0.3, 0.4) we position the figure 0.3 slide widths from left an
 PPTXPosition has two more optional parameters, to further position with inches values (starting from the relative position).
 
 |
+|
 
 .. code:: python
 
@@ -165,6 +173,7 @@ PPTXPosition has two more optional parameters, to further position with inches v
 
 Finally, we save the example as example.pptx.
 
+|
 |
 
 If you are on windows an have PowerPoint installed, you could use some additional features.
