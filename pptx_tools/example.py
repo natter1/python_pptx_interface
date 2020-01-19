@@ -34,7 +34,7 @@ def create_demo_figure():
     return figure
 
 
-def run(save_path: str):
+def run(save_dir: str):
     pp = PPTXCreator(TemplateExample())
 
     title_slide = pp.add_title_slide("Example presentation")
@@ -69,7 +69,6 @@ def run(save_path: str):
     pp.add_table(title_slide, table_data, PPTXPosition(0.02, 0.4))
 
 
-
     if matplotlib_installed:
         fig = create_demo_figure()
         pp.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.3, 0.4))
@@ -77,20 +76,20 @@ def run(save_path: str):
         pp.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.3, 0.4, fig.get_figwidth(), 0.0), zoom=0.5)
         pp.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.3, 0.4, fig.get_figwidth(), 1.5), zoom=0.6)
 
-    pp.save(os.path.join(save_path, "example.pptx"))
+    pp.save(os.path.join(save_dir, "example.pptx"))
 
     try:  # only on Windows with PowerPoint installed:
-        filename_pptx = os.path.join(save_path, "example.pptx")
-        filename_pdf = os.path.join(save_path, "example.pdf")
-        foldername_png = os.path.join(save_path, "example_pngs")
+        filename_pptx = os.path.join(save_dir, "example.pptx")
+        filename_pdf = os.path.join(save_dir, "example.pdf")
+        foldername_png = os.path.join(save_dir, "example_pngs")
 
         # use absolute path, because its not clear where PowerPoint saves PDF/PNG ... otherwise
-        pp.add_slide("additional_slide_for_test")
         pp.save(filename_pptx, create_pdf=True, overwrite=True)
         pp.save_as_pdf(filename_pdf, overwrite=True)
         pp.save_as_png(foldername_png, overwrite_folder=True)
-    except:
-        pass
+    except Exception as e:
+        print(e)
+
 
 if __name__ == '__main__':
     run(os.path.dirname(os.path.abspath(__file__))

@@ -34,7 +34,7 @@ that you could run like
 
     import pptx_tools.example as example
 
-    example.run(save_path=my_path)  # you have to specify the folder where to save the presentation
+    example.run(save_dir=my_dir)  # you have to specify the folder where to save the presentation
 
 This will create an example.pptx, using some of the key-features of python-pptx-interface. Lets have a closer look:
 
@@ -72,7 +72,7 @@ Importing matplotlib is optional - it is used to demonstrate, how to get a matpl
 
 .. code:: python
 
-    def run():
+    def run(save_dir: str):
         pp = PPTXCreator(TemplateExample())
 
         title_slide = pp.add_title_slide("Example presentation")
@@ -169,7 +169,7 @@ PPTXPosition has two more optional parameters, to further position with inches v
 
 .. code:: python
 
-        pp.save("example.pptx")
+        pp.save(os.path.join(save_dir, "example.pptx"))
 
 Finally, we save the example as example.pptx.
 
@@ -181,17 +181,16 @@ If you are on windows an have PowerPoint installed, you could use some additiona
 .. code:: python
 
     try:  # only on Windows with PowerPoint installed:
-        my_path = os.path.dirname(os.path.abspath(__file__))
-        filename_pptx = os.path.join(my_path, "example.pptx")
-        filename_pdf = os.path.join(my_path, "example.pdf")
-        foldername_png = os.path.join(my_path, "example_pngs")
+        filename_pptx = os.path.join(save_dir, "example.pptx")
+        filename_pdf = os.path.join(save_dir, "example.pdf")
+        foldername_png = os.path.join(save_dir, "example_pngs")
 
         # use absolute path, because its not clear where PowerPoint saves PDF/PNG ... otherwise
         pp.save(filename_pptx, create_pdf=True)  # saves your pptx-file and also creates a PDF file
         pp.save_as_pdf(filename_pdf, overwrite=True)  # saves presentation as PDF
         pp.save_as_png(foldername_png, overwrite_folder=True)  # creates folder with PNGs of slides
-    except:
-        pass
+    except Exception as e:
+        print(e)
 
 
 Requirements

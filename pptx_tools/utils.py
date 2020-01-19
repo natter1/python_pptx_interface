@@ -13,37 +13,30 @@ import pptx
 import tempfile
 
 
-class TempFileGenerator:
-    generator = None
-    @classmethod
-    def get_new_generator(cls, prs):
-        TempFileGenerator.generator = cls.temp_generator(prs)
-        return cls.generator
+class TemporaryPPTXFile:
+    __slots__ = ('_file', 'dir', 'filepath', 'raise_on_delete_error')
 
-    @staticmethod
-    def temp_generator(prs: pptx.presentation.Presentation) -> Generator[str, None, None]:
-        temp_pptx = None
+    def __init__(self, mode="w+b", suffix=".pptx", dir=None, raise_on_delete_error = True):
+        if not dir:
+            dir = tempfile.gettempdir()
+        self.dir = dir
+        self.filepath = os.path.join(dir, os.urandom(32).hex() + suffix)
+        self._file = open(self.filepath, mode)
+        self.raise_on_delete_error = raise_on_delete_error
+
+    def __enter__(self):
+        return self._file.__enter__()
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        ret = self._file.__exit__(exc_type, exc_value, traceback)
         try:
-            with tempfile.NamedTemporaryFile(suffix='.pptx', delete=False) as temp_pptx:
-                temp_pptx.close()  # needed on windows systems to access file
-                prs.save(temp_pptx.name)
-                yield temp_pptx.name
-        finally:
-            if temp_pptx is not None:
-                try:
-                    os.remove(temp_pptx.name)
-                except PermissionError as e:  # file still in use somewhere
-                    pass
-
-
-def get_temporary_pptx_filename(prs: pptx.presentation.Presentation) -> str:
-    """
-    Generates a temporary pptx file. This is useful under windows, where tempfile.NamedTemporaryFile is broken.
-    Yields the filename of the temporary file.
-    """
-    my_generator = TempFileGenerator.get_new_generator(prs)
-    for filename in my_generator:
-        return filename
+            os.remove(self._file.name)
+        except PermissionError as e:
+            if self.raise_on_delete_error:
+                raise PermissionError(e)
+            else:
+                print(e)
+        return ret
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -95,13 +88,14 @@ def save_as_pdf(prs: pptx.presentation.Presentation, filename: str, overwrite: b
     Note: you have to give full path for filename, or PowerPoint might cause random exceptions.
     """
     result = False
-    try:
-        result = save_pptx_as_pdf(filename, get_temporary_pptx_filename(prs), overwrite)
-    except _ctypes.COMError as e:
-        print(e)
-        print("Couldn't save PDF file due to communication error with PowerPoint.")
-        result = False
-
+    with TemporaryPPTXFile() as f:
+        prs.save(f.name)
+        try:
+            result = save_pptx_as_pdf(filename, f.name, overwrite)
+        except _ctypes.COMError as e:
+            print(e)
+            print("Couldn't save PDF file due to communication error with PowerPoint.")
+            result = False
     return result
 
 
@@ -114,11 +108,12 @@ def save_as_png(prs: pptx.presentation.Presentation, filename: str, overwrite: b
     Note: you have to give full path for filename, or PowerPoint might cause random exceptions.
     """
     result = False
-    try:
-        result = save_pptx_as_png(filename, get_temporary_pptx_filename(prs), overwrite)
-    except _ctypes.COMError as e:
-        print(e)
-        print("Couldn't save PNG file due to communication error with PowerPoint.")
-        result = False
-
+    with TemporaryPPTXFile() as f:
+        prs.save(f.name)
+        try:
+            result = save_pptx_as_png(filename, f.name, overwrite)
+        except _ctypes.COMError as e:
+            print(e)
+            print("Couldn't save PNG file due to communication error with PowerPoint.")
+            result = False
     return result
