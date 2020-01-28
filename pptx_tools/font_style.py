@@ -47,7 +47,8 @@ class PPTXFontStyle:
         font.italic = self.italic
         font.language_id = self.language_id
         font.name = self.name
-        font.size = Pt(self.size)
+        if self.size is not None:
+            font.size = Pt(self.size)
         font.underline = self.underline
 
     def write_font(self, font: Font) -> None:
@@ -59,14 +60,17 @@ class PPTXFontStyle:
         font.size = Pt(self.size)
         font.underline = self.underline
 
-    def write_shape(self, shape: Shape) -> None:
+    def write_shape(self, shape: Shape) -> None:  # todo: remove? better use write_text_fame
         """
         Write attributes to all paragraphs in given pptx.shapes.autoshape.Shape.
         Raises TypeError if given shape has no text_frame.
         """
         if not shape.has_text_frame:
             raise TypeError("Cannot write font for given shape (has no text_frame)")
-        for paragraph in shape.text_frame.paragraphs:
+        self.write_text_frame(shape.text_frame)
+
+    def write_text_frame(self, text_frame):
+        for paragraph in text_frame.paragraphs:
             self.write_paragraph(paragraph)
 
     def write_paragraph(self, paragraph: _Paragraph) -> None:
