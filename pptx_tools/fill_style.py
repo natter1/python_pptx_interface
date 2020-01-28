@@ -6,6 +6,8 @@ from enum import Enum, auto
 from typing import Union, Optional, Tuple
 
 from pptx.dml.color import RGBColor
+from pptx.dml.fill import FillFormat
+from pptx.enum.base import EnumValue
 from pptx.enum.dml import MSO_THEME_COLOR_INDEX
 
 
@@ -44,15 +46,15 @@ class PPTXFillStyle:
     @fore_color_mso_theme.setter
     def fore_color_mso_theme(self, value):
         if value is not None:
-            assert isinstance(value, MSO_THEME_COLOR_INDEX)
+            assert isinstance(value, EnumValue)
             self._fore_color_rgb = None  # only one color definition at a time!
         self._fore_color_mso_theme = value
 
-    def write_fill(self, fill: any):  # todo typing
+    def write_fill(self, fill: FillFormat):
         if self.fill_type is not None:
             self._write_fill_type(fill)
 
-    def _write_fore_color(self, fill: any):
+    def _write_fore_color(self, fill: FillFormat):
         if self.fore_color_rgb is not None:
             fill.fore_color.rgb = self.fore_color_rgb
         elif self.fore_color_mso_theme is not None:
@@ -62,7 +64,7 @@ class PPTXFillStyle:
         if self.fore_color_brightness:
             fill.fore_color.brightness = self.fore_color_brightness
 
-    def _write_fill_type(self, fill: any):  # todo: typing
+    def _write_fill_type(self, fill: FillFormat):
         if self.fill_type == FillType.NOFILL:
             fill.background()
 

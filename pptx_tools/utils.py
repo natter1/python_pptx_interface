@@ -5,6 +5,7 @@ This module is a collection of helpful misc. functions.
 # from pptx.presentation import Presentation
 import _ctypes
 import os
+from typing import Generator
 
 try:
     from comtypes.client import Constants, CreateObject
@@ -13,6 +14,7 @@ except:
     has_comptypes=False
 
 import pptx
+from pptx.table import Table, _Cell
 import tempfile
 
 
@@ -41,6 +43,11 @@ class TemporaryPPTXFile:
                 print(e)
         return ret
 
+
+def iter_table_cells(table:  Table) -> Generator[_Cell, None, None]:
+    for row in table.rows:
+        for cell in row.cells:
+            yield cell
 
 # ----------------------------------------------------------------------------------------------------------------------
 # The following functions need an installed PowerPoint and will only work on windows systems.
