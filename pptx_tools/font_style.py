@@ -47,8 +47,7 @@ class PPTXFontStyle:
         font.italic = self.italic
         font.language_id = self.language_id
         font.name = self.name
-        if self.size is not None:
-            font.size = Pt(self.size)
+        font.size = Pt(self.size)
         font.underline = self.underline
 
     def write_font(self, font: Font) -> None:
@@ -57,7 +56,8 @@ class PPTXFontStyle:
         font.italic = self.italic
         font.language_id = self.language_id
         font.name = self.name
-        font.size = Pt(self.size)
+        if self.size is not None:
+            font.size = Pt(self.size)
         font.underline = self.underline
 
     def write_shape(self, shape: Shape) -> None:  # todo: remove? better use write_text_fame

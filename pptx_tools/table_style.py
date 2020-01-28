@@ -29,8 +29,8 @@ class PPTXTableStyle:
         self.font_style = PPTXFontStyle()
         self.cell_style = PPTXCellStyle()
         self.first_row_header = None  # False  # special formatting for first row?
-        self.band_col = None  # False  # slightly alternate color brightness per col
-        self.band_row = None  #True  # slightly alternate color brightness per row
+        self.col_banding = None  # False  # slightly alternate color brightness per col
+        self.row_banding = None  #True  # slightly alternate color brightness per row
 
         self.width = None
         self.cols_ratio = None
@@ -49,15 +49,16 @@ class PPTXTableStyle:
         if self.first_row_header is not None:
             table._tbl.firstRow = self.first_row_header
 
-        if self.band_col is not None:
-            table._tbl.band_col = self.band_col
+        if self.col_banding is not None:
+            table.vert_banding = self.col_banding
 
-        if self.band_row is not None:
-            table._tbl.band_row = self.band_row
+        if self.row_banding is not None:
+            table.horz_banding = self.row_banding
 
         # font is managed per cell; there is no "table font"
         for cell in self.iter_cells(table):
             self.font_style.write_text_frame(cell.text_frame)
+            self.cell_style.write_cell(cell)
 
 
 
