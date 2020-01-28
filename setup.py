@@ -7,7 +7,7 @@ long_description = (root_path / "README.rst").read_text()
 
 setup(
     name='python-pptx-interface',
-    version='0.0.6.a04',
+    version='0.0.6',
     packages=['pptx_tools'],
     url='https://github.com/natter1/python_pptx_interface.git',
     license='MIT',

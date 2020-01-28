@@ -38,8 +38,6 @@ def table_no_header() -> PPTXTableStyle:
     result.row_banding = True
     result.col_banding = False
 
-    result.width = Inches(8)
-    result.col_ratios = [1, 1]
     return result
 
 

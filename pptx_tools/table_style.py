@@ -3,8 +3,9 @@ This module provides a helper class to deal with tables in python-pptx.
 @author: Nathanael Jöhrmann
 """
 from enum import Enum, auto
-from typing import Generator
+from typing import Generator, Optional
 
+from pptx.presentation import Presentation
 from pptx.dml.color import RGBColor
 from pptx.shapes.autoshape import Shape
 from pptx.table import Table, _Cell
@@ -34,7 +35,7 @@ class PPTXTableStyle:
         self.col_banding = None  # False  # slightly alternate color brightness per col
         self.row_banding = None  #True  # slightly alternate color brightness per row
 
-        self.width = None
+        self.width: Optional[float] = None  # in [Inches]; don't use Inches() - is transformed in _write_col_sizes!!!
         self.col_ratios = None
         self.position = None
 
@@ -68,7 +69,6 @@ class PPTXTableStyle:
             return
         self.write_table(shape.table)
 
-
     def write_table(self, table: Table) -> None:
         if self.first_row_header is not None:
             table._tbl.firstRow = self.first_row_header
@@ -82,4 +82,9 @@ class PPTXTableStyle:
         if self.width is not None:
             self._write_col_sizes(table)
         self._write_all_cells(table)
+
+    def set_width_as_fraction(self, presentation: Presentation, fraction: float):
+        assert fraction > 0.0
+        self.width = presentation.slide_width.inches * fraction
+
 
