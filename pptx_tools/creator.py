@@ -86,7 +86,7 @@ class PPTXCreator:
             layout = self.title_layout
         return self.add_slide(title, layout)
 
-    def add_slide(self, title: str, layout=None) -> Slide:
+    def add_slide(self, title: str, layout: SlideLayout = None) -> Slide:
         """Adds a new slide to presentation. If now layout is given, default_layout is used."""
         if not layout:
             layout = self.default_layout
