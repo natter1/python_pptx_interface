@@ -44,6 +44,19 @@ class TemporaryPPTXFile:
         return ret
 
 
+class _USE_DEFAULT:  # using a class allows typing
+    def __str__(self):
+        return "This is a default value, used to express that a value should become default, which is indicated with " \
+               "None in python-pptx. But in python-pptx-interface styles None generally means 'do not change'. " \
+               "An example would be 'PPTXFontStyle.size = None'. This would ensure, that the font size will not be " \
+               "changed when calling PPTXFontStyle.write_font(). But to remove a customized font size, e.g. in a run, " \
+               "the value has to be set to None in python-pptx. Thats done with 'PPTXFontStyle.size = use_default'."
+
+
+def use_default():
+    return _USE_DEFAULT
+
+
 def iter_table_cells(table:  Table) -> Generator[_Cell, None, None]:
     for row in table.rows:
         for cell in row.cells:

@@ -2,21 +2,18 @@
 This module provides a helper class to deal with tables in python-pptx.
 @author: Nathanael Jöhrmann
 """
-from enum import Enum, auto
-from typing import Generator, Optional
+from typing import Optional
 
-from pptx.presentation import Presentation
-from pptx.dml.color import RGBColor
 from pptx.shapes.autoshape import Shape
 from pptx.table import Table, _Cell
 from pptx.util import Inches
 
+from pptx_tools.position import PPTXPosition
 from pptx_tools.fill_style import PPTXFillStyle
-from pptx_tools.font_style import PPTXFontStyle
 from pptx_tools.utils import iter_table_cells
 
 
-class PPTXCellStyle:  # format tale cell
+class PPTXCellStyle:  # format table cell
     def __init__(self):
         self.fill_style = PPTXFillStyle()
 
@@ -83,8 +80,15 @@ class PPTXTableStyle:
             self._write_col_sizes(table)
         self._write_all_cells(table)
 
-    def set_width_as_fraction(self, presentation: Presentation, fraction: float):
+        if self.position is not None:
+            table.left, table.top = self.position.tuple()
+
+    def set_width_as_fraction(self, fraction: float):
         assert fraction > 0.0
-        self.width = presentation.slide_width.inches * fraction
+        if PPTXPosition.prs is None:
+            raise TypeError("Still no presentation set for PPTXPosition."
+                            " Create a PPTXCreator instance first, or set manually.")
+
+        self.width = PPTXPosition.prs.slide_width.inches * fraction
 
 

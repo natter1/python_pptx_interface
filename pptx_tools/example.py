@@ -1,7 +1,9 @@
 import os
 
-from pptx_tools.creator import PPTXCreator, PPTXPosition
+from pptx_tools.creator import PPTXCreator
+# from pptx_tools.fill_style import PPTXFillStyle, FillType
 from pptx_tools.font_style import PPTXFontStyle
+from pptx_tools.position import PPTXPosition
 from pptx_tools.style_sheets import font_title, font_default
 from pptx_tools.templates import TemplateExample
 
@@ -63,7 +65,15 @@ def run(save_dir: str):
 
     my_font.set(size=18, bold=False, italic=True, name="Vivaldi",
                 language_id=MSO_LANGUAGE_ID.ENGLISH_UK,
-                underline=MSO_TEXT_UNDERLINE_TYPE.WAVY_DOUBLE_LINE)
+                underline=MSO_TEXT_UNDERLINE_TYPE.WAVY_DOUBLE_LINE,
+                color_rgb=(255, 0, 0))
+    # my_fill = PPTXFillStyle()
+    # my_fill.fill_type = FillType.PATTERNED
+    # my_fill.fore_color_rgb = (255, 0, 0)  # fill.fore_color for font seems to change font color
+    # my_fill.back_color_rgb = (0, 0, 255)
+    # from pptx.enum.dml import MSO_PATTERN_TYPE
+    # my_fill.pattern = MSO_PATTERN_TYPE.PERCENT_50
+    # my_font.fill_style = my_fill
     my_font.write_paragraph(text_shape.text_frame.paragraphs[2])
 
     table_data = []

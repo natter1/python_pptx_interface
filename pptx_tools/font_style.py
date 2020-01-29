@@ -2,15 +2,25 @@
 This module provides a helper class to deal with fonts in python-pptx.
 @author: Nathanael Jöhrmann
 """
-from typing import Union, Optional
+from typing import Union, Optional, Tuple
 
+from pptx.dml.color import RGBColor
 from pptx.enum.lang import MSO_LANGUAGE_ID
 from pptx.enum.text import MSO_TEXT_UNDERLINE_TYPE
 from pptx.shapes.autoshape import Shape
 from pptx.text.text import Font
-from pptx.util import Pt
-from pptx.text.text import _Run
 from pptx.text.text import _Paragraph
+from pptx.text.text import _Run
+from pptx.util import Pt
+
+from pptx_tools.fill_style import PPTXFillStyle
+from pptx_tools.utils import _USE_DEFAULT
+
+
+class _DO_NOT_CHANGE:
+    def __str__(self):
+        return """used to tell PPTXFontStyle.set() to not change a value"""
+
 
 class PPTXFontStyle:
     """
@@ -18,47 +28,84 @@ class PPTXFontStyle:
     always needs an existing Text/Character/... for initializing and also basic functionality like assignment
     of one font to another is missing.
     """
-    # default language anf font
-    language_id: MSO_LANGUAGE_ID = MSO_LANGUAGE_ID.ENGLISH_UK  # MSO_LANGUAGE_ID.GERMAN
-    name = "Roboto"  # "Arial"  # "Arial Narrow"
+    # default language and font; no _USE_DEFAULT for language_id -> use MSO_LANGUAGE_ID.NONE
+    language_id: Union[MSO_LANGUAGE_ID, _USE_DEFAULT, None] = MSO_LANGUAGE_ID.ENGLISH_UK  # MSO_LANGUAGE_ID.GERMAN
+    name: Union[str, _USE_DEFAULT, None] = "Roboto"  # "Arial"  # "Arial Narrow"
 
     def __init__(self):
-        #  If set to None, the bold and italic ... setting is cleared and is inherited
+        #  If set to use_default(), the bold, italic ... setting is cleared and is inherited
         #  from an enclosing shape’s setting, or a setting in a style or master
-        self.bold: Optional[bool] = None
-        self.italic: Optional[bool] = None
+        self.bold: Union[bool, _USE_DEFAULT, None] = None
+        self.italic: Optional[bool, _USE_DEFAULT, None] = None
+        self.underline: Union[MSO_TEXT_UNDERLINE_TYPE, _USE_DEFAULT, bool, None] = None
 
         # use class attribute; instance attribute only when changed by user
         # self.language_id: MSO_LANGUAGE_ID = MSO_LANGUAGE_ID.NONE  # ENGLISH_UK; ENGLISH_US; ESTONIAN; GERMAN; ...
-        # self.name: Optional[str] = None
+        # self.name: Union[str, _USE_DEFAULT, None] = None
 
         # saved in units of Pt (not EMU like pptx.text.text.Font) - converting to EMU is done during write_to_font
         self.size: Optional[int] = None  # 18
-        self.underline: Union[MSO_TEXT_UNDERLINE_TYPE, bool, None] = None
+
 
         # todo: color is ColorFormat object
-        # todo: fill is FillFormat object
-        # self.color = ...
-        # self.fill = ...
+        self._color_rgb: Optional[RGBColor] = None
+        # fil.fore_color changes font color; also gradient or image might be useful (not implemented in FillStyle jet)
+        self.fill_style: Optional[PPTXFillStyle] = None  # PPTXFillStyle()
 
-    def read_font(self, font: Font) -> None:
+    @property
+    def color_rgb(self):
+        return self._color_rgb
+
+    @color_rgb.setter
+    def color_rgb(self, value: Union[RGBColor, Tuple[any, any, any], None]):
+        assert isinstance(value, RGBColor) or isinstance(value, tuple) or (value is None)
+        if isinstance(value, tuple):
+            self._color_rgb = RGBColor(*value)
+        else:
+            self._color_rgb = value
+
+
+    def read_font(self, font: Font) -> None:  # todo: check for None behavior (use_dfault() ? )
         """Read attributes from a pptx.text.text.Font object."""
-        font.bold = self.bold
-        font.italic = self.italic
-        font.language_id = self.language_id
-        font.name = self.name
-        font.size = Pt(self.size)
-        font.underline = self.underline
+        self.bold = font.bold
+        self.italic = font.italic
+        self.name = font.name
+        self.size = font.size  # todo: convert to Pt ?
+        self.underline = font.underline
 
     def write_font(self, font: Font) -> None:
         """Write attributes to a pptx.text.text.Font object."""
-        font.bold = self.bold
-        font.italic = self.italic
-        font.language_id = self.language_id
-        font.name = self.name
+        font.name = self._get_write_value(new_value=self.name, old_value=font.name)
+        font.bold = self._get_write_value(new_value=self.bold, old_value=font.bold)
+        font.italic = self._get_write_value(new_value=self.italic, old_value=font.italic)
+        font.underline = self._get_write_value(new_value=self.underline, old_value=font.underline)
+
+        if self.language_id == _USE_DEFAULT:
+            font.language_id = MSO_LANGUAGE_ID.NONE
+        else:
+            font.language_id = self._get_write_value(new_value=self.language_id, old_value=font.language_id)
+
         if self.size is not None:
-            font.size = Pt(self.size)
-        font.underline = self.underline
+            if self.size == _USE_DEFAULT:
+                font.size = None
+            else:
+                font.size = Pt(self.size)
+
+        if self.color_rgb is not None:
+            font.color.rgb = self.color_rgb
+
+        if self.fill_style is not None:
+            self.fill_style.write_fill(font.fill)
+
+    def _get_write_value(self, new_value, old_value, check_default=True):
+        """Used to check for None and use_default(), returning the correct value to write."""
+        result = old_value
+        if new_value is not None:
+            if check_default and (new_value == _USE_DEFAULT):
+                result = None
+            else:
+                result = new_value
+        return result
 
     def write_shape(self, shape: Shape) -> None:  # todo: remove? better use write_text_fame
         """
@@ -98,26 +145,29 @@ class PPTXFontStyle:
         # _to.size = _from.size
         # _to.underline = _from.underline
 
-    def set(self, bold: Optional[bool] = None,
-            italic: Optional[bool] = None,
-            language_id: MSO_LANGUAGE_ID = None,
-            name: Optional[str] = None,
-            size: Optional[int] = None,
-            underline: Union[MSO_TEXT_UNDERLINE_TYPE, bool, None] = None
+    def set(self, bold: Optional[bool] = _DO_NOT_CHANGE,
+            italic: Optional[bool] = _DO_NOT_CHANGE,
+            language_id: MSO_LANGUAGE_ID = _DO_NOT_CHANGE,
+            name: Optional[str] = _DO_NOT_CHANGE,
+            size: Optional[int] = _DO_NOT_CHANGE,
+            underline: Union[MSO_TEXT_UNDERLINE_TYPE, bool, None] = _DO_NOT_CHANGE,
+            color_rgb: Union[RGBColor, Tuple[any, any, any]] = _DO_NOT_CHANGE
             ):
-        """Convienience method to set several font attributes together."""
-        if bold is not None:
+        """Convenience method to set several font attributes together."""
+        if bold is not _DO_NOT_CHANGE:
             self.bold = bold
-        if italic is not None:
+        if italic is not _DO_NOT_CHANGE:
             self.italic = italic
-        if language_id is not None:
+        if language_id is not _DO_NOT_CHANGE:
             self.language_id = language_id
-        if name is not None:
+        if name is not _DO_NOT_CHANGE:
             self.name = name
-        if size is not None:
+        if size is not _DO_NOT_CHANGE:
             self.size = size
-        if underline is not None:
+        if underline is not _DO_NOT_CHANGE:
             self.underline = underline
+        if color_rgb is not _DO_NOT_CHANGE:
+            self.color_rgb = color_rgb
 
         # -----------------------------------------------------------------------------------------------
         # ----------------------------------- experimentell methods -------------------------------------
