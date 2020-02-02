@@ -64,6 +64,8 @@ class PPTXTableStyle:
         if not shape.has_table:
             print(f"Warning: Could not write table style. {shape} has no table.")
             return
+        if self.position is not None:
+            shape.left, shape.top = self.position.tuple()
         self.write_table(shape.table)
 
     def write_table(self, table: Table) -> None:
@@ -79,9 +81,6 @@ class PPTXTableStyle:
         if self.width is not None:
             self._write_col_sizes(table)
         self._write_all_cells(table)
-
-        if self.position is not None:
-            table.left, table.top = self.position.tuple()
 
     def set_width_as_fraction(self, fraction: float):
         assert fraction > 0.0

@@ -224,7 +224,7 @@ class PPTXCreator:
 
         result = self.add_slide("Content")
         content_text_box = self.add_text_box(result, "", PPTXPosition(0.1, 0.2))
-        for text, slide in content_entries:
+        for text, slide in content_entries[1:]:
             paragraph = content_text_box.text_frame.add_paragraph()
             run = paragraph.add_run()
             run.text = text
