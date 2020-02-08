@@ -201,10 +201,38 @@ If you are on windows an have PowerPoint installed, you could use some additiona
     except Exception as e:
         print(e)
 
+Style sheets
+------------
+While python-pptx-interface can load a template file with placeholders, the intended use case is more focused on
+creating and positioning shapes like tables, pictures, textboxes etc. directly in python. Therefore all unused
+placeholders are removed by default, when creating a new slide. As it can be quite tedious to do all the necessary
+formatting directly using python-pptx, this package provides some style sheet like classes, to define a certain format
+and than "write" it to the created shapes. In general python-pptx-interface styles only change parameters, that
+have been set. E.g. when creating a PPTXFontStyle instance and setting the font size, using this style will only
+change the font size, but not color, bold ... attributes. Beside setting an attribute or not changing an attribute
+there is a third case - using the default value as it is defined e.g. in the master slide. For that case, the value
+**_USE_DEFAULT** can be used.
+
+**To be consistent, python-pptx-interface will not change anything if an attribute is set to None.
+This can differ from the pyrhon-pptx behaviour in some cases, where None means "use default".**
+
+class PPTXFontStyle
+-------------------
+
+...
+
+class PPTXParagraphStyle
+------------------------
+
+...
+
+class PPTXTableStyle
+--------------------
+
+...
 
 Requirements
 ------------
-
 * Python >= 3.6 (f-strings)
 * python-pptx
 
