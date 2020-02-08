@@ -217,17 +217,19 @@ there is a third case - using the default value as it is defined e.g. in the mas
 This can differ from the pyrhon-pptx behaviour in some cases, where None means "use default".**
 
 class PPTXFontStyle
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 ...
 
+`This <#Style sheets>`__
+
 class PPTXParagraphStyle
-------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 ...
 
 class PPTXTableStyle
---------------------
+~~~~~~~~~~~~~~~~~~~~
 
 ...
 
