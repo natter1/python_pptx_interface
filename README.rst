@@ -11,11 +11,14 @@ But it it can be challenging to master the complex syntax. This module tries to 
 for python-pptx to create PowerPoint files. It also adds some still missing features like moving slides,
 create links to other slides or remove unused place-holders.
 
-The main parts are:
-  * PPTXCreator: Create pptx-File from template, incluing methods to add text, tables, figures etc.
-  * PPTXPosition: Allows positioning as fraction of slide height/width.
-  * PPTXFontStyle: Helps to set/change/copy fonts.
-  * PPTXTableStyle: Used to layout tables.
+Content
+
+  * `Example <README.rst#Style-sheets>`__: demonstrates usage of some key-features of python-pptx-interface
+  * `class-PPTXCreator <README.rst#Style-sheets>`__: Create pptx-File from template, incluing methods to add text, tables, figures etc.
+  * `class-PPTXPosition <README.rst#Style-sheets>`__: Allows positioning as fraction of slide height/width.
+  * Style sheets
+     + `class PPTXFontStyle <README.rst#class-PPTXFontStyle>`__: Helps to set/change/copy fonts.
+     + `class PPTXTableStyle <README.rst#class-PPTXTableStyle>`__: Used to layout tables.
   * AbstractTemplate: Base class for all custom templates (enforce necessary attributes)
   * TemplateExample: Example class to show how to work with custom templates
   * utils.py - a collection of useful functions, eg. to generate PDF or PNG from \*.pptx (needs PowerPoint installed)
@@ -201,6 +204,17 @@ If you are on windows an have PowerPoint installed, you could use some additiona
     except Exception as e:
         print(e)
 
+
+class PPTXCreator
+-----------
+
+...
+
+class PPTXPosition
+------------------
+
+...
+
 Style sheets
 ------------
 While python-pptx-interface can load a template file with placeholders, the intended use case is more focused on
@@ -221,7 +235,6 @@ class PPTXFontStyle
 
 ...
 
-`This <README.rst#Style-sheets>`__
 
 class PPTXParagraphStyle
 ~~~~~~~~~~~~~~~~~~~~~~~~
