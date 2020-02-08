@@ -13,9 +13,9 @@ create links to other slides or remove unused place-holders.
 
 Content
 
-  * `Example <README.rst#Style-sheets>`__: demonstrates usage of some key-features of python-pptx-interface
-  * `class-PPTXCreator <README.rst#Style-sheets>`__: Create pptx-File from template, incluing methods to add text, tables, figures etc.
-  * `class-PPTXPosition <README.rst#Style-sheets>`__: Allows positioning as fraction of slide height/width.
+  * `Example <README.rst#Example>`__: demonstrates usage of some key-features of python-pptx-interface
+  * `class PPTXCreator <README.rst#class-PPTXCreator>`__: Create pptx-File from template, incluing methods to add text, tables, figures etc.
+  * `class PPTXPosition <README.rst#class-PPTXPosition>`__: Allows positioning as fraction of slide height/width.
   * Style sheets
      + `class PPTXFontStyle <README.rst#class-PPTXFontStyle>`__: Helps to set/change/copy fonts.
      + `class PPTXTableStyle <README.rst#class-PPTXTableStyle>`__: Used to layout tables.
