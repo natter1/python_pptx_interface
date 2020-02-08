@@ -221,7 +221,7 @@ class PPTXFontStyle
 
 ...
 
-`This <#Style sheets>`__
+`This <README.rst#Style sheets>`__
 
 class PPTXParagraphStyle
 ~~~~~~~~~~~~~~~~~~~~~~~~
