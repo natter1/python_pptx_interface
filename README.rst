@@ -24,7 +24,7 @@ Content
   * `Working with templates <README.rst#Working-with-templates>`__
      + `class AbstractTemplate <README.rst#class-AbstractTemplate>`__: Base class for all custom templates (enforce necessary attributes)
      + `class TemplateExample <README.rst#class-TemplateExample>`__: Example class to show how to work with custom templates
-  * `utils.py <README.rst#utils.py>`__: A collection of useful functions, eg. to generate PDF or PNG from \*.pptx (needs PowerPoint installed)
+  * `utils.py <README.rst#utilspy>`__: A collection of useful functions, eg. to generate PDF or PNG from \*.pptx (needs PowerPoint installed)
 
 
 Example
