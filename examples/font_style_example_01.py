@@ -6,22 +6,53 @@ This script demonstrates how to work with fonts and font-styles in python-pptx-i
 import os
 
 from pptx.enum.lang import MSO_LANGUAGE_ID
+from pptx.enum.text import MSO_TEXT_UNDERLINE_TYPE
 
 from pptx_tools.creator import PPTXCreator
+from pptx_tools.fill_style import PPTXFillStyle
 from pptx_tools.font_style import PPTXFontStyle
+from pptx_tools.position import PPTXPosition
 from pptx_tools.style_sheets import font_title
 from pptx_tools.templates import TemplateExample
 
 
 def run(save_dir: str):
+    filename_pptx = os.path.join(save_dir, "font_style_example_01.pptx")
     pp = PPTXCreator(TemplateExample())
 
+    # default language and font-type for all created PPTXFontStyle instances:
     PPTXFontStyle.lanaguage_id = MSO_LANGUAGE_ID.ENGLISH_UK
     PPTXFontStyle.name = "Roboto"
 
-    title_slide = pp.add_title_slide("Example presentation")
+    title_slide = pp.add_title_slide("Font style example presentation")
     font = font_title()  # returns a PPTXFontStyle instance with bold font and size = 32 Pt
     font.write_shape(title_slide.shapes.title)  # change font attributes for all paragraphs in shape
+
+    text_01 = "This text has three paragraphs. This is the first.\n" \
+           "Das ist der zweite ...\n" \
+           "... and the third."
+
+    my_font = PPTXFontStyle()
+    my_font.size = 16
+    text_shape_01 = pp.add_text_box(title_slide, text_01, PPTXPosition(0.02, 0.24), my_font)
+
+    my_font.set(size=22, bold=True, language_id=MSO_LANGUAGE_ID.GERMAN)
+    my_font.write_paragraph(text_shape_01.text_frame.paragraphs[1])
+    my_font._write_font_experimentell(text_shape_01.text_frame.paragraphs[1].font)  # write all_caps and strikethrough
+
+    my_font.set(size=18, bold=False, italic=True, name="Vivaldi",
+                language_id=MSO_LANGUAGE_ID.ENGLISH_UK,
+                underline=MSO_TEXT_UNDERLINE_TYPE.WAVY_DOUBLE_LINE,
+                color_rgb=(255, 0, 0))
+    my_font.write_paragraph(text_shape_01.text_frame.paragraphs[2])
+
+    text_02 = "This text uses copied font."
+
+    my_copied_font = PPTXFontStyle()
+    my_copied_font.read_font(text_shape_01.text_frame.paragraphs[1].font)
+    text_shape_02 = pp.add_text_box(title_slide, text_02, PPTXPosition(0.42, 0.24), my_copied_font)
+
+    pp.save(filename_pptx, overwrite=True)
 
 
 if __name__ == '__main__':

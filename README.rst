@@ -11,14 +11,20 @@ But it it can be challenging to master the complex syntax. This module tries to 
 for python-pptx to create PowerPoint files. It also adds some still missing features like moving slides,
 create links to other slides or remove unused place-holders.
 
-The main parts are:
-  * PPTXCreator: Create pptx-File from template, incluing methods to add text, tables, figures etc.
-  * PPTXPosition: Allows positioning as fraction of slide height/width.
-  * PPTXFontStyle: Helps to set/change/copy fonts.
-  * PPTXTableStyle: Used to layout tables.
-  * AbstractTemplate: Base class for all custom templates (enforce necessary attributes)
-  * TemplateExample: Example class to show how to work with custom templates
-  * utils.py - a collection of useful functions, eg. to generate PDF or PNG from \*.pptx (needs PowerPoint installed)
+Content
+
+  * `Example <README.rst#Example>`__: demonstrates usage of some key-features of python-pptx-interface
+  * `class PPTXCreator <README.rst#class-PPTXCreator>`__: Create pptx-File from template, incluing methods to add text, tables, figures etc.
+  * `class PPTXPosition <README.rst#class-PPTXPosition>`__: Allows positioning as fraction of slide height/width.
+  * `Style sheets <README.rst#Style-sheets>`__
+     + `class PPTXFontStyle <README.rst#class-PPTXFontStyle>`__: Helps to set/change/copy fonts.
+     + `class PPTXParagraphStyle <README.rst#class-PPTXParagraphStyle>`__: Format paragraphs (alignment, indent ...).
+     + `class PPTXTableStyle <README.rst#class-PPTXTableStyle>`__: Used to layout tables.
+     + `class PPTXFillStyle <README.rst#class-PPTXFillStyle>`__
+  * `Working with templates <README.rst#Working-with-templates>`__
+     + `class AbstractTemplate <README.rst#class-AbstractTemplate>`__: Base class for all custom templates (enforce necessary attributes)
+     + `class TemplateExample <README.rst#class-TemplateExample>`__: Example class to show how to work with custom templates
+  * `utils.py <README.rst#utilspy>`__: A collection of useful functions, eg. to generate PDF or PNG from \*.pptx (needs PowerPoint installed)
 
 
 Example
@@ -202,9 +208,75 @@ If you are on windows an have PowerPoint installed, you could use some additiona
         print(e)
 
 
+class PPTXCreator
+-----------
+
+...
+
+class PPTXPosition
+------------------
+
+...
+
+Style sheets
+------------
+While python-pptx-interface can load a template file with placeholders, the intended use case is more focused on
+creating and positioning shapes like tables, pictures, textboxes etc. directly in python. Therefore all unused
+placeholders are removed by default, when creating a new slide. As it can be quite tedious to do all the necessary
+formatting directly using python-pptx, this package provides some style sheet like classes, to define a certain format
+and than "write" it to the created shapes. In general python-pptx-interface styles only change parameters, that
+have been set. E.g. when creating a PPTXFontStyle instance and setting the font size, using this style will only
+change the font size, but not color, bold ... attributes. Beside setting an attribute or not changing an attribute
+there is a third case - using the default value as it is defined e.g. in the master slide. For that case, the value
+**_USE_DEFAULT** can be used.
+
+**To be consistent, python-pptx-interface will not change anything if an attribute is set to None.
+This can differ from the pyrhon-pptx behaviour in some cases, where None means "use default".**
+
+class PPTXFontStyle
+~~~~~~~~~~~~~~~~~~~
+
+...
+
+
+class PPTXParagraphStyle
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+...
+
+class PPTXTableStyle
+~~~~~~~~~~~~~~~~~~~~
+
+...
+
+class PPTXFillStyle
+~~~~~~~~~~~~~~~~~~~
+
+...
+
+Working with templates
+----------------------
+
+...
+
+class AbstractTemplate
+~~~~~~~~~~~~~~~~~~~~~~
+
+...
+
+class TemplateExample
+~~~~~~~~~~~~~~~~~~~~~
+
+...
+
+utils.py
+--------
+
+...
+
+
 Requirements
 ------------
-
 * Python >= 3.6 (f-strings)
 * python-pptx
 

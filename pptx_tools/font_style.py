@@ -70,7 +70,7 @@ class PPTXFontStyle:
         self.bold = font.bold
         self.italic = font.italic
         self.name = font.name
-        self.size = font.size  # todo: convert to Pt ?
+        self.size = font.size.pt  # todo: convert to Pt ?
         self.underline = font.underline
 
     def write_font(self, font: Font) -> None:
