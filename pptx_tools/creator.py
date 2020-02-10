@@ -96,22 +96,6 @@ class PPTXCreator:
         self.remove_unpopulated_shapes(slide)
         return slide
 
-    def _write_position_in_kwargs(self, kwargs: dict, left_rel: float = 0.0, top_rel: float = 0.0) -> None:
-        """
-        This method modifies(!) the argument kwargs by adding or changing the entries "left" and "top".
-        """
-        left = self._fraction_width_to_inch(left_rel)
-        top = self._fraction_height_to_inch(top_rel)
-
-        if "left" not in kwargs:
-            kwargs["left"] = left
-        else:
-            kwargs["left"] = kwargs["left"] + left
-        if "top" not in kwargs:
-            kwargs["top"] = top
-        else:
-            kwargs["top"] = kwargs["top"] + top
-
     def add_matplotlib_figure(self, fig: 'Figure', slide: Slide,
                               pptx_position: PPTXPosition = None,
                               zoom: float = 1.0,
