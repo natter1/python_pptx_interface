@@ -13,18 +13,18 @@ create links to other slides or remove unused place-holders.
 
 Content
 
-  * `Example <README.rst#Example>`__: demonstrates usage of some key-features of python-pptx-interface
-  * `class PPTXCreator <README.rst#class-PPTXCreator>`__: Create pptx-File from template, incluing methods to add text, tables, figures etc.
-  * `class PPTXPosition <README.rst#class-PPTXPosition>`__: Allows positioning as fraction of slide height/width.
-  * `Style sheets <README.rst#Style-sheets>`__
-     + `class PPTXFontStyle <README.rst#class-PPTXFontStyle>`__: Helps to set/change/copy fonts.
-     + `class PPTXParagraphStyle <README.rst#class-PPTXParagraphStyle>`__: Format paragraphs (alignment, indent ...).
-     + `class PPTXTableStyle <README.rst#class-PPTXTableStyle>`__: Used to layout tables.
-     + `class PPTXFillStyle <README.rst#class-PPTXFillStyle>`__
-  * `Working with templates <README.rst#Working-with-templates>`__
-     + `class AbstractTemplate <README.rst#class-AbstractTemplate>`__: Base class for all custom templates (enforce necessary attributes)
-     + `class TemplateExample <README.rst#class-TemplateExample>`__: Example class to show how to work with custom templates
-  * `utils.py <README.rst#utilspy>`__: A collection of useful functions, eg. to generate PDF or PNG from \*.pptx (needs PowerPoint installed)
+  * `Example <#example>`__: demonstrates usage of some key-features of python-pptx-interface
+  * `class PPTXCreator <#class-pptxcreator>`__: Create pptx-File from template, incluing methods to add text, tables, figures etc.
+  * `class PPTXPosition <#class-pptxposition>`__: Allows positioning as fraction of slide height/width.
+  * `Style sheets <#style-sheets>`__
+     + `class PPTXFontStyle <#class-pptxfontstyle>`__: Helps to set/change/copy fonts.
+     + `class PPTXParagraphStyle <#class-pptxparagraphstyle>`__: Format paragraphs (alignment, indent ...).
+     + `class PPTXTableStyle <#class-pptxtablestyle>`__: Used to layout tables.
+     + `class PPTXFillStyle <#class-pptxfillstyle>`__
+  * `Working with templates <#working-with-templates>`__
+     + `class AbstractTemplate <#class-abstracttemplate>`__: Base class for all custom templates (enforce necessary attributes)
+     + `class TemplateExample <#class-templateexample>`__: Example class to show how to work with custom templates
+  * `utils.py <#utilspy>`__: A collection of useful functions, eg. to generate PDF or PNG from \*.pptx (needs PowerPoint installed)
 
 
 Example
@@ -210,7 +210,7 @@ If you are on windows an have PowerPoint installed, you could use some additiona
 
 
 class PPTXCreator
------------
+-----------------
 
 ...
 
