@@ -35,12 +35,13 @@ Example
 
 |
 
-This module comes with an `example <https://github.com/natter1/python_pptx_interface/blob/master/pptx_tools/example.py>`_,
+This module comes with a
+`general example <https://github.com/natter1/python_pptx_interface/blob/master/pptx_tools/examples/general_example_01.py>`_,
 that you could run like
 
 .. code:: python
 
-    import pptx_tools.example as example
+    from pptx_tools.examples import general_example_01 as example
 
     example.run(save_dir=my_dir)  # you have to specify the folder where to save the presentation
 
