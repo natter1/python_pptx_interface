@@ -5,7 +5,7 @@ This module is a collection of helpful misc. functions.
 # from pptx.presentation import Presentation
 import _ctypes
 import os
-from typing import Generator
+from typing import Generator, Union
 
 try:
     from comtypes.client import Constants, CreateObject
@@ -62,34 +62,34 @@ def iter_table_cells(table:  Table) -> Generator[_Cell, None, None]:
         for cell in row.cells:
             yield cell
 
+
 # ----------------------------------------------------------------------------------------------------------------------
 # The following functions need an installed PowerPoint and will only work on windows systems.
 # ----------------------------------------------------------------------------------------------------------------------
-def save_pptx_as_png(png_foldername: str, pptx_filename: str, overwrite_folder: bool = False):
-
+def save_pptx_as_png(save_folder: Union[str, "LocalPath"], pptx_filename: str, overwrite_folder: bool = False) -> bool:
     if not has_comptypes:
-        print("Comptype module needed to save PDFs.")
-        return
+        print("Comptype module needed to save PNGs.")
+        return False
 
-    if os.path.isdir(png_foldername) and not overwrite_folder:
-        print(f"Folder {png_foldername} already exists. "
+    if os.path.isdir(save_folder) and not overwrite_folder:
+        print(f"Folder {save_folder} already exists. "
               f"Set overwrite_folder=True, if you want to overwrite folder content.")
-        return
+        return False
 
     powerpoint = CreateObject("Powerpoint.Application")
     pp_constants = Constants(powerpoint)
 
     pres = powerpoint.Presentations.Open(pptx_filename)
-    pres.SaveAs(png_foldername, pp_constants.ppSaveAsPNG)
+    pres.SaveAs(str(save_folder), pp_constants.ppSaveAsPNG)
     pres.close()
     if powerpoint.Presentations.Count == 0:  # only close, when no other Presentations are open!
         powerpoint.quit()
+    return True
 
-
-def save_pptx_as_pdf(pdf_filename: str, pptx_filename, overwrite: bool = False) -> bool:
+def save_pptx_as_pdf(pdf_filename: Union[str, "LocalPath"], pptx_filename, overwrite: bool = False) -> bool:
     """
-    :param pdf_filename: filename (including path) of new pdf file
-    :param pptx_filename: filename (including path) of pptx file
+    :param pdf_filename: save_folder (including path) of new pdf file
+    :param pptx_filename: save_folder (including path) of pptx file
     :return:
     """
     if not has_comptypes:
@@ -103,7 +103,7 @@ def save_pptx_as_pdf(pdf_filename: str, pptx_filename, overwrite: bool = False) 
     powerpoint = CreateObject("Powerpoint.Application")
     pp_constants = Constants(powerpoint)
     pres = powerpoint.Presentations.Open(pptx_filename)
-    pres.SaveAs(pdf_filename, pp_constants.ppSaveAsPDF)
+    pres.SaveAs(str(pdf_filename), pp_constants.ppSaveAsPDF)
     pres.close()
     if powerpoint.Presentations.Count == 0:  # only close, when no other Presentations are open!
         powerpoint.quit()
@@ -117,7 +117,7 @@ def save_as_pdf(prs: pptx.presentation.Presentation, filename: str, overwrite: b
     Requires to save a temporary *.pptx first.
     Needs module comtypes (windows only).
     Needs installed PowerPoint.
-    Note: you have to give full path for filename, or PowerPoint might cause random exceptions.
+    Note: you have to give full path for save_folder, or PowerPoint might cause random exceptions.
     """
     result = False
     with TemporaryPPTXFile() as f:
@@ -131,19 +131,19 @@ def save_as_pdf(prs: pptx.presentation.Presentation, filename: str, overwrite: b
     return result
 
 
-def save_as_png(prs: pptx.presentation.Presentation, filename: str, overwrite: bool = False) -> bool:
+def save_as_png(prs: pptx.presentation.Presentation, save_folder: str, overwrite: bool = False) -> bool:
     """
     Save presentation as PDF.
     Requires to save a temporary *.pptx first.
     Needs module comtypes (windows only).
     Needs installed PowerPoint.
-    Note: you have to give full path for filename, or PowerPoint might cause random exceptions.
+    Note: you have to give full path for save_folder, or PowerPoint might cause random exceptions.
     """
     result = False
     with TemporaryPPTXFile() as f:
         prs.save(f.name)
         try:
-            result = save_pptx_as_png(filename, f.name, overwrite)
+            result = save_pptx_as_png(save_folder, f.name, overwrite)
         except _ctypes.COMError as e:
             print(e)
             print("Couldn't save PNG file due to communication error with PowerPoint.")

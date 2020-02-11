@@ -1,15 +1,19 @@
+import glob
+import os
+
 import matplotlib.pyplot as plt
 import pytest
 from pptx.util import Inches
 
 from pptx_tools.creator import PPTXCreator
 from pptx_tools.position import PPTXPosition
+from pptx_tools.style_sheets import table_no_header
 from pptx_tools.templates import TemplateExample
 
 
 @pytest.fixture(scope='class')
 def pptx_creator():
-    creator = PPTXCreator()
+    creator = PPTXCreator(TemplateExample())
     yield creator
 
 
@@ -56,18 +60,18 @@ class TestPPTXCreator:
 
     def test_add_title_slide(self, pptx_creator):
         n_slides_before = len(pptx_creator.prs.slides)
-        pptx_creator.add_title_slide("Title slide")
+        pptx_creator.add_title_slide("test_add_title_slide")
         n_slides_after = len(pptx_creator.prs.slides)
         assert n_slides_before == n_slides_after - 1
 
     def test_add_slide(self, pptx_creator):
         n_slides_before = len(pptx_creator.prs.slides)
-        pptx_creator.add_slide("slide")
+        pptx_creator.add_slide(" test_add_slide")
         n_slides_after = len(pptx_creator.prs.slides)
         assert n_slides_before == n_slides_after - 1
 
     def test_add_matplotlib_figure(self, pptx_creator, matplotlib_figure):
-        slide = pptx_creator.add_slide("slide")
+        slide = pptx_creator.add_slide("test_add_matplotlib_figure")
         fig_width = matplotlib_figure.bbox_inches.width
         fig_height = matplotlib_figure.bbox_inches.height
         zoom = 0.8
@@ -80,7 +84,7 @@ class TestPPTXCreator:
         assert fig_height * zoom == shape.height.inches
 
     def test_add_text_box(self, pptx_creator):
-        slide = pptx_creator.add_slide("slide")
+        slide = pptx_creator.add_slide("test_add_text_box")
         position = PPTXPosition(0.6, 0.4, 1, -1)
         text = "Test text"
 
@@ -95,8 +99,15 @@ class TestPPTXCreator:
         result = pptx_creator._get_rows_cols(table_data)
         assert result == (5, 3)
 
-    def test_add_table(self):
-        assert False
+    def test_add_table(self, pptx_creator):
+        table_data = [[0, 1, 2], [1], [2], [3], [4]]  # 5 rows; 3 cols
+        position = PPTXPosition(0.6, 0.4, 1, -1)
+        table_style = table_no_header()
+        slide = pptx_creator.add_slide("test_add_table")
+        shape = pptx_creator.add_table(slide, table_data=table_data, position=position, table_style=table_style)
+        assert pptx_creator.prs.slide_width * position.left_rel + Inches(position.left) == shape.left
+        assert pptx_creator.prs.slide_height * position.top_rel + Inches(position.top) == shape.top
+        assert len(shape.table.rows) == 5
 
     def test_move_slide(self):
         assert False
@@ -107,14 +118,67 @@ class TestPPTXCreator:
     def test_create_hyperlink(self):
         assert False
 
-    def test_add_content_slide(self):
-        assert False
+    def test_add_content_slide(self, pptx_creator):  # todo: how to improve test?
+        slide = pptx_creator.add_content_slide()
+        assert slide
 
-    def test_save(self):
-        assert False
+    def test_save(self, pptx_creator, tmpdir):
+        file = tmpdir.join("test_save.pptx")
+        pptx_creator.save(file)
+        assert os.path.isfile(file)
+        old_size = os.path.getsize(file)
+        pptx_creator.add_slide("test_save")  # increase file size
+        pptx_creator.save(file)
+        assert old_size == os.path.getsize(file)  # file not overwritten
+        assert not os.path.isfile(tmpdir.join("test_save.pdf"))  # create_pdf should be False by default
 
-    def test_save_as_pdf(self):
-        assert False
+    def test_save__create_pdf_is_true(self, pptx_creator, tmpdir):
+        pptx_file = tmpdir.join("test_save.pptx")
+        pdf_file = tmpdir.join("test_save.pdf")
+        pptx_creator.add_slide("test_save")  # PowerPoint cannot export empty presentation as pdf
+        pptx_creator.save(pptx_file, create_pdf=True)
+        assert os.path.isfile(pptx_file)
+        assert os.path.isfile(pdf_file)
+        old_size_pdf = os.path.getsize(pdf_file)
+        old_size_pptx = os.path.getsize(pptx_file)
+        pptx_creator.add_slide("test_save slide 2")  # increase file size
+        pptx_creator.save(pptx_file, create_pdf=True)
+        assert old_size_pdf == os.path.getsize(pdf_file)  # file not overwritten
+        assert old_size_pptx == os.path.getsize(pptx_file)  # file not overwritten
 
-    def test_save_as_png(self):
-        assert False
+    def test_save__create_overwrite_is_true(self, pptx_creator, tmpdir):
+        pptx_file = tmpdir.join("test_save.pptx")
+        pptx_creator.save(pptx_file, overwrite=True)
+        assert os.path.isfile(pptx_file)
+        old_size = os.path.getsize(pptx_file)
+        pptx_creator.add_slide("test_save")  # increase file size
+        pptx_creator.save(pptx_file, overwrite=True)
+        assert old_size < os.path.getsize(pptx_file)  # file overwritten
+
+    def test_save_as_pdf(self, pptx_creator, tmpdir):
+        pdf_file = tmpdir.join("test_save.pdf")
+        pptx_creator.add_slide("test_save")  # PowerPoint cannot export empty presentation as pdf
+        pptx_creator.save_as_pdf(pdf_file)
+        assert os.path.isfile(pdf_file)
+        old_size_pdf = os.path.getsize(pdf_file)
+        pptx_creator.add_slide("test_save slide 2")  # increase file size
+        pptx_creator.save_as_pdf(pdf_file)
+        assert old_size_pdf == os.path.getsize(pdf_file)  # file not overwritten
+
+    def test_save_as_pdf__overwrite_is_true(self, pptx_creator, tmpdir):
+        pdf_file = tmpdir.join("test_save.pdf")
+        pptx_creator.add_slide("test_save")  # PowerPoint cannot export empty presentation as pdf
+        pptx_creator.save_as_pdf(pdf_file, overwrite=True)
+        assert os.path.isfile(pdf_file)
+        old_size_pdf = os.path.getsize(pdf_file)
+        pptx_creator.add_slide("test_save slide 2")  # increase file size
+        pptx_creator.save_as_pdf(pdf_file, overwrite=True)
+        assert old_size_pdf < os.path.getsize(pdf_file)  # file not overwritten
+
+    def test_save_as_png(self, pptx_creator, tmpdir):
+        pptx_creator.add_slide("test_save")
+        assert not pptx_creator.save_as_png(tmpdir)  # tmpdir exists -> no files saved
+        dummy = f"{tmpdir}\\*.png"
+        assert len(glob.glob(f"{tmpdir}\\*.png")) == 0
+        assert pptx_creator.save_as_png(tmpdir.join("pngs"))  # create new folder, or set overwrite = True
+        assert len(glob.glob(f"{tmpdir.join('pngs')}\\*.png")) == len(pptx_creator.prs.slides)

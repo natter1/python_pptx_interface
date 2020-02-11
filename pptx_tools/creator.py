@@ -4,7 +4,8 @@ This module provides an easier Interface to create *.pptx presentations using th
 """
 import io
 import os
-from typing import Type, Optional, Iterable
+from typing import Type, Optional, Iterable, Union
+
 
 from pptx_tools import utils
 from pptx_tools.position import PPTXPosition
@@ -41,7 +42,7 @@ class PPTXCreator:
     # disable typechecker, because None values are not allowed for attributes, but needed to create them in __init__
     # Correct values are set when calling self._create_presentation()
     # noinspection PyTypeChecker
-    def __init__(self, template: Optional[Type[AbstractTemplate]] = None):
+    def __init__(self, template: Optional[AbstractTemplate] = None):
         self.slides: list = []
         self.template: Type[AbstractTemplate] = None
         self.prs: Presentation = None
@@ -74,7 +75,7 @@ class PPTXCreator:
             self.title_layout = self.prs.slide_masters[0].slide_layouts[0]
             self.default_layout = self.prs.slide_masters[0].slide_layouts[0]
 
-    def _create_presentation_from_template(self, template: Type[AbstractTemplate]) -> None:
+    def _create_presentation_from_template(self, template: AbstractTemplate) -> None:
         self.template = template
         self.prs = template.prs
         self.title_layout = template.title_layout
@@ -144,7 +145,7 @@ class PPTXCreator:
         return rows, cols
 
     def add_table(self, slide: Slide, table_data: Iterable[Iterable[any]], position: PPTXPosition = None,
-                  style: PPTXTableStyle = None, auto_merge: bool = False) -> Shape:
+                  table_style: PPTXTableStyle = None, auto_merge: bool = False) -> Shape:
         """
         table_data: outer iter -> rows, inner iter cols
         auto_merge: use 'merge_left' and 'merge_up' as entry to mark merging cells
@@ -154,6 +155,9 @@ class PPTXCreator:
             position = self.default_position
         left, top = position.tuple()
         result = slide.shapes.add_table(rows, cols, left, top, width=Inches(cols), height=Inches(0.5*rows))
+
+        if table_style:
+            table_style.write_shape(result)
 
         if auto_merge:
             pass  # todo: merge cells; replace text for merged cells with ""
@@ -218,27 +222,27 @@ class PPTXCreator:
 
         return result
 
-    def save(self, filename: str, create_pdf: bool = False, overwrite=False):
+    def save(self, filename: Union[str, "LocalPath"], create_pdf: bool = False, overwrite=False):
         """
-        Saves the presentation under the given filename.
+        Saves the presentation under the given save_folder.
         """
         if os.path.isfile(filename) and not overwrite:
             print(f"File {filename} already exists. Set overwrite=True, if you want to overwrite file.")
-            return
-
-        self.prs.save(filename)
+        else:
+            self.prs.save(filename)
 
         if create_pdf:
+            filename = str(filename)  # enables to work with LocalPath-variable (which is not subscriptable)
             self.save_as_pdf(filename[:-4] + "pdf", overwrite)
 
     def save_as_pdf(self, filename: str, overwrite=False) -> bool:
         """
-        Saves the presentation as pdf under the given filename. Needs PowerPoint installed.
+        Saves the presentation as pdf under the given save_folder. Needs PowerPoint installed.
         """
         return utils.save_as_pdf(self.prs, filename, overwrite)
 
-    def save_as_png(self, filename, overwrite_folder=False) -> bool:
+    def save_as_png(self, save_folder, overwrite_folder=False) -> bool:
         """
         Saves the presentation as PNG's in the given folder. Needs PowerPoint installed.
         """
-        return utils.save_as_png(self.prs, filename, overwrite_folder)
+        return utils.save_as_png(self.prs, save_folder, overwrite_folder)
