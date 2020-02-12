@@ -212,15 +212,20 @@ If you are on windows an have PowerPoint installed, you could use some additiona
 class PPTXCreator
 -----------------
 
-...
+This class provides an easy interface to create a PowerPoint presentation via python-pptx. It has methods to add slides
+and shapes (tables, textboxes, matplotlib figures) setting format by using layouts and stylesheets. It also has methods
+to move slides around, remove empty placeholders or create hyperlinks.
 
 class PPTXPosition
 ------------------
 
-...
+To position shapes in a slide, many methods of PPTXCreator except a PPTXPosition parameter. It allows to give a position
+relative to slide width and high (as a fraction). Additionally ypou can specify the position in inches starting from the
+relative position. Some stylesheets e.g. PPTXTableStyle can also have an optional PPTXPosition attribute. In that case
+writing the style to a shape will also set its position.
 
-Style sheets
-------------
+Stylesheets
+-----------
 While python-pptx-interface can load a template file with placeholders, the intended use case is more focused on
 creating and positioning shapes like tables, pictures, textboxes etc. directly in python. Therefore all unused
 placeholders are removed by default, when creating a new slide. As it can be quite tedious to do all the necessary
