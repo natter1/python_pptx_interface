@@ -135,23 +135,23 @@ class TestPPTXCreator:
     def test_save__create_pdf_is_true(self, pptx_creator, tmpdir):
         pptx_file = tmpdir.join("test_save.pptx")
         pdf_file = tmpdir.join("test_save.pdf")
-        pptx_creator.add_slide("test_save")  # PowerPoint cannot export empty presentation as pdf
+        pptx_creator.add_slide("test_save__create_pdf_is_true")  # PowerPoint cannot export empty presentation as pdf
         pptx_creator.save(pptx_file, create_pdf=True)
         assert os.path.isfile(pptx_file)
         assert os.path.isfile(pdf_file)
         old_size_pdf = os.path.getsize(pdf_file)
         old_size_pptx = os.path.getsize(pptx_file)
-        pptx_creator.add_slide("test_save slide 2")  # increase file size
+        pptx_creator.add_slide("test_save__create_pdf_is_true_2 (should not be in saved files!)")  # increase file size
         pptx_creator.save(pptx_file, create_pdf=True)
         assert old_size_pdf == os.path.getsize(pdf_file)  # file not overwritten
         assert old_size_pptx == os.path.getsize(pptx_file)  # file not overwritten
 
-    def test_save__create_overwrite_is_true(self, pptx_creator, tmpdir):
+    def test_save__overwrite_is_true(self, pptx_creator, tmpdir):
         pptx_file = tmpdir.join("test_save.pptx")
         pptx_creator.save(pptx_file, overwrite=True)
         assert os.path.isfile(pptx_file)
         old_size = os.path.getsize(pptx_file)
-        pptx_creator.add_slide("test_save")  # increase file size
+        pptx_creator.add_slide("test_save__overwrite_is_true")  # increase file size
         pptx_creator.save(pptx_file, overwrite=True)
         assert old_size < os.path.getsize(pptx_file)  # file overwritten
 

@@ -8,6 +8,7 @@ import pkg_resources
 from pptx import Presentation
 
 from pptx_tools.better_abc import ABCMeta, abstract_attribute
+from pptx_tools.utils import change_paragraph_text_to
 
 
 class AbstractTemplate(metaclass=ABCMeta):
@@ -132,32 +133,6 @@ def analyze_pptx(template_file):
                     print(f"\t\tid: {phf.idx} - name: {shape.name}")
     # output_file = '..\\resources\pptx\\template_names.pptx'
     # prs.save(output_file)
-
-
-# todo: add something like this directly to python-pptx?
-def copy_font(_from, _to):
-    _to.bold = _from.bold
-    # todo: color is ColorFormat object
-    # _to.set_color = _from.color
-    # todo: fill is FillFormat object
-    # _to.fill = _from.fill
-    _to.italic = _from.italic
-    _to.language_id = _from.language_id
-    _to.name = _from.name
-    _to.size = _from.size
-    _to.underline = _from.underline
-
-
-def change_paragraph_text_to(paragraph, text):
-    """
-    Change text of paragraph to text, but keep format.
-    :param paragraph:
-    :param text:
-    :return:
-    """
-    font = paragraph.runs[0].font
-    paragraph.text = text
-    copy_font(_from=font, _to=paragraph.runs[0].font)
 
 
 def analyze_paragraphs(paragraphs):

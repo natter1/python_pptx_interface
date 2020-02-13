@@ -156,17 +156,17 @@ class PPTXCreator:
         left, top = position.tuple()
         result = slide.shapes.add_table(rows, cols, left, top, width=Inches(cols), height=Inches(0.5*rows))
 
+        table = result.table
+        for ir, row in enumerate(table_data):
+            for ic, entry in enumerate(row):
+                table.cell(ir, ic).text = f"{entry}"
+
         if table_style:
             table_style.write_shape(result)
 
         if auto_merge:
             pass  # todo: merge cells; replace text for merged cells with ""
 
-        table = result.table
-        for ir, row in enumerate(table_data):
-            for ic, entry in enumerate(row):
-                table.cell(ir, ic).text = f"{entry}"
-                print(ir, ic, entry)
         return result
 
     def move_slide(self, slide: Slide, new_index: int):

@@ -2,10 +2,10 @@
 This module is a collection of helpful misc. functions.
 @author: Nathanael Jöhrmann
 """
-# from pptx.presentation import Presentation
 import _ctypes
 import os
 from typing import Generator, Union
+
 
 try:
     from comtypes.client import Constants, CreateObject
@@ -61,6 +61,20 @@ def iter_table_cells(table:  Table) -> Generator[_Cell, None, None]:
     for row in table.rows:
         for cell in row.cells:
             yield cell
+
+
+def change_paragraph_text_to(paragraph, text):
+    """
+    Change text of paragraph to text, but keep format of first run.
+    :param paragraph:
+    :param text:
+    :return:
+    """
+    from pptx_tools.font_style import PPTXFontStyle  # local import to prevent circle import error
+    font = PPTXFontStyle()
+    font.read_font(paragraph.runs[0].font)
+    paragraph.text = text
+    font.write_paragraph(paragraph)
 
 
 # ----------------------------------------------------------------------------------------------------------------------

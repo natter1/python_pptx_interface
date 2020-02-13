@@ -65,13 +65,14 @@ class PPTXFontStyle:
             self._color_rgb = value
 
 
-    def read_font(self, font: Font) -> None:  # todo: check for None behavior (use_dfault() ? )
+    def read_font(self, font: Font) -> 'PPTXFontStyle':  # todo: check for None behavior (use_dfault() ? )
         """Read attributes from a pptx.text.text.Font object."""
         self.bold = font.bold
         self.italic = font.italic
         self.name = font.name
         self.size = font.size.pt  # todo: convert to Pt ?
         self.underline = font.underline
+        return self
 
     def write_font(self, font: Font) -> None:
         """Write attributes to a pptx.text.text.Font object."""
@@ -152,7 +153,7 @@ class PPTXFontStyle:
             size: Optional[int] = _DO_NOT_CHANGE,
             underline: Union[MSO_TEXT_UNDERLINE_TYPE, bool, None] = _DO_NOT_CHANGE,
             color_rgb: Union[RGBColor, Tuple[any, any, any]] = _DO_NOT_CHANGE
-            ):
+            ) -> 'PPTXFontStyle':
         """Convenience method to set several font attributes together."""
         if bold is not _DO_NOT_CHANGE:
             self.bold = bold
@@ -168,6 +169,7 @@ class PPTXFontStyle:
             self.underline = underline
         if color_rgb is not _DO_NOT_CHANGE:
             self.color_rgb = color_rgb
+        return self
 
         # -----------------------------------------------------------------------------------------------
         # ----------------------------------- experimentell methods -------------------------------------
