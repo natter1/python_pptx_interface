@@ -13,6 +13,7 @@ from pptx_tools.table_style import PPTXTableStyle
 
 try:
     from matplotlib.figure import Figure
+    import matplotlib.pyplot as plt
     has_matplotlib = True
 except ImportError as e:
     has_matplotlib = False
@@ -98,11 +99,11 @@ class PPTXCreator:
         return slide
 
     def add_matplotlib_figure(self, fig: 'Figure', slide: Slide,
-                              pptx_position: PPTXPosition = None,
+                              position: PPTXPosition = None,
                               zoom: float = 1.0,
                               **kwargs) -> Picture:
         """
-        Add a motplotlib figure to slide and position it via pptx_position.
+        Add a motplotlib figure to slide and position it via position.
         Optional parameter zoom sets image scaling in PowerPoint; only used if width not in kwargs (default = 1.0)
         """
         if not has_matplotlib:
@@ -110,13 +111,31 @@ class PPTXCreator:
 
         if "width" not in kwargs:
             kwargs["width"] = Inches(fig.get_figwidth() * zoom)
-        if not pptx_position:
-            pptx_position = self.default_position
-        kwargs.update(pptx_position.dict())
+        if not position:
+            position = self.default_position
+        kwargs.update(position.dict())
         with io.BytesIO() as output:
             fig.savefig(output, format="png")
             pic = slide.shapes.add_picture(output, **kwargs)  # 0, 0)#, left, top)
         return pic
+
+    def add_latex_formula(self, formula: str, slide: Slide, position: PPTXPosition = None, dpi: int = 150,
+                          font_size: int = 18, color: str = "black", alpha: float = 0.0, **kwargs) -> Picture:
+        """
+        Add the given latex-like math-formula as an image to the presentation using matplotlib.
+        """
+        if not has_matplotlib:
+            raise ModuleNotFoundError("Adding a latex-like formula needs module matplotlib to be installed.")
+
+        figure: plt.Figure = plt.figure(figsize=(20, 20), dpi=dpi)
+        figure.suptitle(fr"${formula}$", fontsize=font_size, color=color, dpi=150, **kwargs)
+        tight_bbox = figure.get_tightbbox(figure.canvas.get_renderer())  # tight_layout = True
+        # there seems to be no way to add the tight_bbox to existing figure ^^ -> create figure again
+        figure: plt.Figure = plt.figure(figsize=tight_bbox.size, dpi=dpi)
+        figure.suptitle(fr"${formula}$", fontsize=font_size, color=color, dpi=150, **kwargs)
+        figure.patch.set_alpha(alpha)
+        return self.add_matplotlib_figure(figure, slide, position)
+
 
     def add_text_box(self, slide, text: str, position: PPTXPosition = None, font: PPTXFontStyle = None) -> Shape:
         """

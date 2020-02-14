@@ -96,6 +96,7 @@ def run(save_dir: str):
         pp.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.3, 0.4, fig.get_figwidth(), 0.0), zoom=0.5)
         pp.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.3, 0.4, fig.get_figwidth(), 1.5), zoom=0.6)
 
+        pp.add_latex_formula(f"\mu={5}^{5}", title_slide)
     pp.save(os.path.join(save_dir, "general_example_01.pptx"))
 
     try:  # only on Windows with PowerPoint installed:

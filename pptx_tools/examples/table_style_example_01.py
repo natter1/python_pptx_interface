@@ -50,7 +50,7 @@ def run(save_dir: str):
     # It's also possible to add the position directly to the table style:
     table_style.position = PPTXPosition(0.02, 0.14)
     # or to set the table width as a fraction of slide width:
-    table_style.set_width_as_fraction(0.47)
+    table_style.set_width_as_fraction(0.49)
     # change row/col bending
     table_style.col_banding = True
     table_style.row_banding = False

@@ -241,7 +241,7 @@ This can differ from the pyrhon-pptx behaviour in some cases, where None means "
 
 class PPTXFontStyle
 ~~~~~~~~~~~~~~~~~~~
-
+`font-style example <https://github.com/natter1/python_pptx_interface/blob/master/pptx_tools/examples/font_style_example_01.py>`_
 ...
 
 
@@ -252,7 +252,7 @@ class PPTXParagraphStyle
 
 class PPTXTableStyle
 ~~~~~~~~~~~~~~~~~~~~
-
+`table-style example <https://github.com/natter1/python_pptx_interface/blob/master/pptx_tools/examples/table_style_example_01.py>`_,
 ...
 
 class PPTXFillStyle
