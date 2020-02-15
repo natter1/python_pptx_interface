@@ -96,7 +96,15 @@ def run(save_dir: str):
         pp.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.3, 0.4, fig.get_figwidth(), 0.0), zoom=0.5)
         pp.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.3, 0.4, fig.get_figwidth(), 1.5), zoom=0.6)
 
-        pp.add_latex_formula(f"\mu={5}^{5}", title_slide)
+        pp.add_text_box(title_slide, "Use latex-like syntax \nto create formula:", PPTXPosition(0.75, 0.22))
+        pp.add_latex_formula(f"\mu={5}^{5}", title_slide, PPTXPosition(0.74, 0.35))
+        formula02 = "\\int_0^\\infty e^{-x^2} dx=\\frac{\\sqrt{\\pi}}{2}"
+        pp.add_latex_formula(formula02, title_slide, PPTXPosition(0.75, 0.45))
+        pp.add_latex_formula(formula02, title_slide, PPTXPosition(0.75, 0.55), font_size=24, color="red")
+        formula03 = "\\hat{x}, \\check{x}, \\tilde{a}, \\bar{\\ell}, \\dot{y}, \\ddot{y}, \\vec{z_1}, \\vec{z}_1"
+        pp.add_latex_formula(formula03, title_slide, PPTXPosition(0.75, 0.65), font_size=24, color="blue")
+        formula04 = r"\frac{3}{4} \binom{3}{4} \genfrac{}{}{0}{}{3}{4}"
+        pp.add_latex_formula(formula04, title_slide, PPTXPosition(0.75, 0.75), font_size=44, color="g")
     pp.save(os.path.join(save_dir, "general_example_01.pptx"))
 
     try:  # only on Windows with PowerPoint installed:
