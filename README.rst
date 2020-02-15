@@ -218,28 +218,28 @@ to move slides around, remove empty placeholders or create hyperlinks.
 
 **Methods defined:**
 
-* add_content_slide(self, slide_index=1)
+* add_content_slide
     Add a content slide with hyperlinks to all other slides and puts it to position slide_index.
-* add_latex_formula(self, formula: str, slide: pptx.slide.Slide, position: pptx_tools.position.PPTXPosition = None, dpi: int = 150, font_size: int = 18, color: str = 'black', alpha: float = 0.0, \*\*kwargs) -> pptx.shapes.picture.Picture
+* add_latex_formula
     Add the given latex-like math-formula as an image to the presentation using matplotlib.
-* add_matplotlib_figure(self, fig: 'Figure', slide: pptx.slide.Slide, position: pptx_tools.position.PPTXPosition = None, zoom: float = 1.0, \*\*kwargs) -> pptx.shapes.picture.Picture
+* add_matplotlib_figure
     Add a motplotlib figure to slide and position it via position.
     Optional parameter zoom sets image scaling in PowerPoint. Only used if width not in kwargs (default = 1.0).
-* add_slide(self, title: str, layout: pptx.slide.SlideLayout = None) -> pptx.slide.Slide
+* add_slide
     Add a new slide to presentation. If no layout is given, default_layout is used.
-* add_table(self, slide: pptx.slide.Slide, table_data: Iterable[Iterable[<built-in function any>]], position: pptx_tools.position.PPTXPosition = None, table_style: pptx_tools.table_style.PPTXTableStyle = None, auto_merge: bool = False) -> pptx.shapes.autoshape.Shape
+* add_table
     Add a table shape with given table_data at position using table_style. (table_data: outer iter -> rows, inner iter cols; auto_merge: not implemented jet)
-* add_text_box(self, slide, text: str, position: pptx_tools.position.PPTXPosition = None, font: pptx_tools.font_style.PPTXFontStyle = None) -> pptx.shapes.autoshape.Shape
+* add_text_box
     Add a text box with given text using given position and font. Uses self.default_position if no position is given.
-* add_title_slide(self, title: str, layout: pptx.slide.SlideLayout = None) -> pptx.slide.Slide
+* add_title_slide
     Add a new slide to presentation. If no layout is given, title_layout is used.
-* move_slide(self, slide: pptx.slide.Slide, new_index: int)
+* move_slide
     Move the given slide to position new_index.
-* save(self, filename: Union[str, ForwardRef('LocalPath')], create_pdf: bool = False, overwrite=False)
+* save
     Save presentation under the given filename.
-* save_as_pdf(self, filename: str, overwrite=False) -> bool
+* save_as_pdf
     Save the presentation as pdf under the given filenmae. Needs PowerPoint installed.
-* save_as_png(self, save_folder, overwrite_folder=False) -> bool
+* save_as_png
    Saves the presentation as PNG's in the given folder. Needs PowerPoint installed.
 
 **Static methods defined:**
