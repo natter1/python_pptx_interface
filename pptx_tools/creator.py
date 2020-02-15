@@ -128,11 +128,11 @@ class PPTXCreator:
             raise ModuleNotFoundError("Adding a latex-like formula needs module matplotlib to be installed.")
 
         figure: plt.Figure = plt.figure(figsize=(20, 20), dpi=dpi)
-        figure.suptitle(fr"${formula}$", fontsize=font_size, color=color, dpi=150, **kwargs)
+        figure.suptitle(fr"${formula}$", fontsize=font_size, color=color, **kwargs)
         tight_bbox = figure.get_tightbbox(figure.canvas.get_renderer())  # tight_layout = True
         # there seems to be no way to add the tight_bbox to existing figure ^^ -> create figure again
         figure: plt.Figure = plt.figure(figsize=tight_bbox.size, dpi=dpi)
-        figure.suptitle(fr"${formula}$", fontsize=font_size, color=color, dpi=150, **kwargs)
+        figure.suptitle(fr"${formula}$", fontsize=font_size, color=color, **kwargs)
         figure.patch.set_alpha(alpha)
         return self.add_matplotlib_figure(figure, slide, position)
 
