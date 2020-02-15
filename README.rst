@@ -216,6 +216,49 @@ This class provides an easy interface to create a PowerPoint presentation via py
 and shapes (tables, textboxes, matplotlib figures) setting format by using layouts and stylesheets. It also has methods
 to move slides around, remove empty placeholders or create hyperlinks.
 
+**Methods defined:**
+
+* add_content_slide(self, slide_index=1)
+    Add a content slide with hyperlinks to all other slides and puts it to position slide_index.
+* add_latex_formula(self, formula: str, slide: pptx.slide.Slide, position: pptx_tools.position.PPTXPosition = None, dpi: int = 150, font_size: int = 18, color: str = 'black', alpha: float = 0.0, \*\*kwargs) -> pptx.shapes.picture.Picture
+    Add the given latex-like math-formula as an image to the presentation using matplotlib.
+* add_matplotlib_figure(self, fig: 'Figure', slide: pptx.slide.Slide, position: pptx_tools.position.PPTXPosition = None, zoom: float = 1.0, \*\*kwargs) -> pptx.shapes.picture.Picture
+    Add a motplotlib figure to slide and position it via position.
+    Optional parameter zoom sets image scaling in PowerPoint. Only used if width not in kwargs (default = 1.0).
+* add_slide(self, title: str, layout: pptx.slide.SlideLayout = None) -> pptx.slide.Slide
+    Add a new slide to presentation. If no layout is given, default_layout is used.
+* add_table(self, slide: pptx.slide.Slide, table_data: Iterable[Iterable[<built-in function any>]], position: pptx_tools.position.PPTXPosition = None, table_style: pptx_tools.table_style.PPTXTableStyle = None, auto_merge: bool = False) -> pptx.shapes.autoshape.Shape
+    Add a table shape with given table_data at position using table_style. (table_data: outer iter -> rows, inner iter cols; auto_merge: not implemented jet)
+* add_text_box(self, slide, text: str, position: pptx_tools.position.PPTXPosition = None, font: pptx_tools.font_style.PPTXFontStyle = None) -> pptx.shapes.autoshape.Shape
+    Add a text box with given text using given position and font. Uses self.default_position if no position is given.
+* add_title_slide(self, title: str, layout: pptx.slide.SlideLayout = None) -> pptx.slide.Slide
+    Add a new slide to presentation. If no layout is given, title_layout is used.
+* move_slide(self, slide: pptx.slide.Slide, new_index: int)
+    Move the given slide to position new_index.
+* save(self, filename: Union[str, ForwardRef('LocalPath')], create_pdf: bool = False, overwrite=False)
+    Save presentation under the given filename.
+* save_as_pdf(self, filename: str, overwrite=False) -> bool
+    Save the presentation as pdf under the given filenmae. Needs PowerPoint installed.
+* save_as_png(self, save_folder, overwrite_folder=False) -> bool
+   Saves the presentation as PNG's in the given folder. Needs PowerPoint installed.
+
+**Static methods defined:**
+
+* create_hyperlink(run: pptx.text.text._Run, shape: pptx.shapes.autoshape.Shape, to_slide: pptx.slide.Slide)
+    Make the given run a hyperlink to to_slide.
+* remove_unpopulated_shapes(slide: pptx.slide.Slide)
+    Removes empty placeholders (e.g. due to layout) from slide. Further testing needed.
+
+**Properties defines:**
+
+* prs: python-pptx Presentation object
+* slides: list of all slides in presentation
+* template: used template file
+* title_layout: laxout used for title slide
+* default_layout: default layout
+* default_position: used, when no PPTXPosition is given to add_table/add_text_box/... methods
+
+
 class PPTXPosition
 ------------------
 

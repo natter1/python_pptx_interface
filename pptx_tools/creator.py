@@ -39,7 +39,6 @@ class PPTXCreator:
         - use pptx templates (in combination with templates.py)
         - removes unused placeholder from added slides
     """
-
     # disable typechecker, because None values are not allowed for attributes, but needed to create them in __init__
     # Correct values are set when calling self._create_presentation()
     # noinspection PyTypeChecker
@@ -67,7 +66,7 @@ class PPTXCreator:
 
     def _create_presentation(self, template=None) -> None:
         """
-        Create a new presentation (using optional template)
+        Create a new presentation (using optional template).
         """
         if template:
             self._create_presentation_from_template(template)
@@ -77,19 +76,20 @@ class PPTXCreator:
             self.default_layout = self.prs.slide_masters[0].slide_layouts[0]
 
     def _create_presentation_from_template(self, template: AbstractTemplate) -> None:
+        """Create a new presentation using the given template."""
         self.template = template
         self.prs = template.prs
         self.title_layout = template.title_layout
         self.default_layout = template.default_layout
 
     def add_title_slide(self, title: str, layout: SlideLayout = None) -> Slide:
-        """Adds a new slide to presentation. If now layout is given, title_layout is used."""
+        """Add a new slide to presentation. If no layout is given, title_layout is used."""
         if not layout:
             layout = self.title_layout
         return self.add_slide(title, layout)
 
     def add_slide(self, title: str, layout: SlideLayout = None) -> Slide:
-        """Adds a new slide to presentation. If now layout is given, default_layout is used."""
+        """Add a new slide to presentation. If no layout is given, default_layout is used."""
         if not layout:
             layout = self.default_layout
         slide = self.prs.slides.add_slide(layout)
@@ -104,7 +104,7 @@ class PPTXCreator:
                               **kwargs) -> Picture:
         """
         Add a motplotlib figure to slide and position it via position.
-        Optional parameter zoom sets image scaling in PowerPoint; only used if width not in kwargs (default = 1.0)
+        Optional parameter zoom sets image scaling in PowerPoint. Only used if width not in kwargs (default = 1.0).
         """
         if not has_matplotlib:
             raise ModuleNotFoundError("Adding a matplotlib figure needs module matplotlib to be installed.")
@@ -139,7 +139,7 @@ class PPTXCreator:
 
     def add_text_box(self, slide, text: str, position: PPTXPosition = None, font: PPTXFontStyle = None) -> Shape:
         """
-        Adds a text box with given text using given position and font.
+        Add a text box with given text using given position and font.
         Uses self.default_position if no position is given.
         """
         width = height = Inches(1)  # no auto-resizing of shape -> has to be done inside PowerPoint
@@ -153,7 +153,7 @@ class PPTXCreator:
         return result
 
     def _get_rows_cols(self, table_data: Iterable[Iterable[any]]):
-        """Used to get number of rows and cols from table data"""
+        """Used to get number of rows and cols from table data."""
         rows = sum(1 for e in table_data)
 
         cols = 0
@@ -166,8 +166,9 @@ class PPTXCreator:
     def add_table(self, slide: Slide, table_data: Iterable[Iterable[any]], position: PPTXPosition = None,
                   table_style: PPTXTableStyle = None, auto_merge: bool = False) -> Shape:
         """
+        Add a table shape with given table_data at position using table_style.
         table_data: outer iter -> rows, inner iter cols
-        auto_merge: use 'merge_left' and 'merge_up' as entry to mark merging cells
+        auto_merge: use 'merge_left' and 'merge_up' as entry to mark merging cells (not implemented jet)
         """
         rows, cols = self._get_rows_cols(table_data)
         if position is None:
@@ -189,7 +190,7 @@ class PPTXCreator:
         return result
 
     def move_slide(self, slide: Slide, new_index: int):
-        """Moves the given slide to position new_index."""
+        """Move the given slide to position new_index."""
         _sldIdLst = self.prs.slides._sldIdLst
 
         to_move = None
@@ -211,11 +212,10 @@ class PPTXCreator:
             # if shape.is_placeholder and shape.text_frame.text == "":
             if shape.has_text_frame and shape.text_frame.text == "":
                 shape.element.getparent().remove(shape.element)
-                # print(f"removed index {index}")
 
     @staticmethod
     def create_hyperlink(run: _Run, shape: Shape, to_slide: Slide):  # text hyperlink not implemented in pptx-python
-        """Makes the given run a hyperlink to to_slide."""
+        """Make the given run a hyperlink to to_slide."""
         shape.click_action.target_slide = to_slide
         run.hyperlink.address = shape.click_action.hyperlink.address
         run.hyperlink._hlinkClick.action = shape.click_action.hyperlink._hlink.action
@@ -223,7 +223,7 @@ class PPTXCreator:
         shape.click_action.target_slide = None
 
     def add_content_slide(self, slide_index=1):
-        """Adds a content slide with hyperlinks to all other slides and puts it to position slide_index."""
+        """Add a content slide with hyperlinks to all other slides and puts it to position slide_index."""
         content_entries = []
 
         for slide in self.prs.slides:
@@ -243,7 +243,7 @@ class PPTXCreator:
 
     def save(self, filename: Union[str, "LocalPath"], create_pdf: bool = False, overwrite=False):
         """
-        Saves the presentation under the given save_folder.
+        Save presentation under the given filename.
         """
         if os.path.isfile(filename) and not overwrite:
             print(f"File {filename} already exists. Set overwrite=True, if you want to overwrite file.")
@@ -256,7 +256,7 @@ class PPTXCreator:
 
     def save_as_pdf(self, filename: str, overwrite=False) -> bool:
         """
-        Saves the presentation as pdf under the given save_folder. Needs PowerPoint installed.
+        Save the presentation as pdf under the given filenmae. Needs PowerPoint installed.
         """
         return utils.save_as_pdf(self.prs, filename, overwrite)
 
