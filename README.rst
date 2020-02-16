@@ -6,6 +6,13 @@ python_pptx_interface
 .. image:: http://img.shields.io/:license-MIT-blue.svg?style=flat-square
     :target: http://badges.MIT-license.org
 
+|
+
+.. figure:: https://github.com/natter1/python_pptx_interface/raw/master/docs/images/general_example_o1_title_slide.png
+    :width: 500pt
+
+|
+
 `python-pptx <https://github.com/scanny/python-pptx.git>`_ is a great module to create pptx-files.
 But it it can be challenging to master the complex syntax. This module tries to present an easier interface
 for python-pptx to create PowerPoint files. It also adds some still missing features like moving slides,
@@ -13,7 +20,6 @@ create links to other slides or remove unused place-holders.
 
 Content
 
-  * `Example <#example>`__: demonstrates usage of some key-features of python-pptx-interface
   * `class PPTXCreator <#class-pptxcreator>`__: Create pptx-File from template, incluing methods to add text, tables, figures etc.
   * `class PPTXPosition <#class-pptxposition>`__: Allows positioning as fraction of slide height/width.
   * `Style sheets <#style-sheets>`__
@@ -25,10 +31,134 @@ Content
      + `class AbstractTemplate <#class-abstracttemplate>`__: Base class for all custom templates (enforce necessary attributes)
      + `class TemplateExample <#class-templateexample>`__: Example class to show how to work with custom templates
   * `utils.py <#utilspy>`__: A collection of useful functions, eg. to generate PDF or PNG from \*.pptx (needs PowerPoint installed)
+  * `Examples <#example>`__: Collection of examples demonstrating how to use python-pptx-interface.
+     + `Example <#example>`__: demonstrates usage of some key-features of python-pptx-interface with explanations
+     + `General example 01 <#generalexample01>`__: demonstrates usage of some key-features of python-pptx-interface
+     + `Font style example 01 <#fontstyleexample01>`__
+     + `Table style example 01 <#tablestyleexample01>`__
 
+
+
+class PPTXCreator
+-----------------
+
+This class provides an easy interface to create a PowerPoint presentation via python-pptx. It has methods to add slides
+and shapes (tables, textboxes, matplotlib figures) setting format by using layouts and stylesheets. It also has methods
+to move slides around, remove empty placeholders or create hyperlinks.
+
+**Methods defined:**
+
+* add_content_slide
+    Add a content slide with hyperlinks to all other slides and puts it to position slide_index.
+* add_latex_formula
+    Add the given latex-like math-formula as an image to the presentation using matplotlib.
+* add_matplotlib_figure
+    Add a motplotlib figure to slide and position it via position.
+    Optional parameter zoom sets image scaling in PowerPoint. Only used if width not in kwargs (default = 1.0).
+* add_slide
+    Add a new slide to presentation. If no layout is given, default_layout is used.
+* add_table
+    Add a table shape with given table_data at position using table_style. (table_data: outer iter -> rows, inner iter cols; auto_merge: not implemented jet)
+* add_text_box
+    Add a text box with given text using given position and font. Uses self.default_position if no position is given.
+* add_title_slide
+    Add a new slide to presentation. If no layout is given, title_layout is used.
+* move_slide
+    Move the given slide to position new_index.
+* save
+    Save presentation under the given filename.
+* save_as_pdf
+    Save the presentation as pdf under the given filenmae. Needs PowerPoint installed.
+* save_as_png
+   Saves the presentation as PNG's in the given folder. Needs PowerPoint installed.
+
+**Static methods defined:**
+
+* create_hyperlink(run: pptx.text.text._Run, shape: pptx.shapes.autoshape.Shape, to_slide: pptx.slide.Slide)
+    Make the given run a hyperlink to to_slide.
+* remove_unpopulated_shapes(slide: pptx.slide.Slide)
+    Removes empty placeholders (e.g. due to layout) from slide. Further testing needed.
+
+**Properties defines:**
+
+* prs: python-pptx Presentation object
+* slides: list of all slides in presentation
+* template: used template file
+* title_layout: laxout used for title slide
+* default_layout: default layout
+* default_position: used, when no PPTXPosition is given to add_table/add_text_box/... methods
+
+
+class PPTXPosition
+------------------
+
+To position shapes in a slide, many methods of PPTXCreator except a PPTXPosition parameter. It allows to give a position
+relative to slide width and high (as a fraction). Additionally ypou can specify the position in inches starting from the
+relative position. Some stylesheets e.g. PPTXTableStyle can also have an optional PPTXPosition attribute. In that case
+writing the style to a shape will also set its position.
+
+Stylesheets
+-----------
+While python-pptx-interface can load a template file with placeholders, the intended use case is more focused on
+creating and positioning shapes like tables, pictures, textboxes etc. directly in python. Therefore all unused
+placeholders are removed by default, when creating a new slide. As it can be quite tedious to do all the necessary
+formatting directly using python-pptx, this package provides some style sheet like classes, to define a certain format
+and than "write" it to the created shapes. In general python-pptx-interface styles only change parameters, that
+have been set. E.g. when creating a PPTXFontStyle instance and setting the font size, using this style will only
+change the font size, but not color, bold ... attributes. Beside setting an attribute or not changing an attribute
+there is a third case - using the default value as it is defined e.g. in the master slide. For that case, the value
+**_USE_DEFAULT** can be used.
+
+**To be consistent, python-pptx-interface will not change anything if an attribute is set to None.
+This can differ from the pyrhon-pptx behaviour in some cases, where None means "use default".**
+
+class PPTXFontStyle
+~~~~~~~~~~~~~~~~~~~
+`font-style example <https://github.com/natter1/python_pptx_interface/blob/master/pptx_tools/examples/font_style_example_01.py>`_
+...
+
+
+class PPTXParagraphStyle
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+...
+
+class PPTXTableStyle
+~~~~~~~~~~~~~~~~~~~~
+`table-style example <https://github.com/natter1/python_pptx_interface/blob/master/pptx_tools/examples/table_style_example_01.py>`_,
+...
+
+class PPTXFillStyle
+~~~~~~~~~~~~~~~~~~~
+
+...
+
+Working with templates
+----------------------
+
+...
+
+class AbstractTemplate
+~~~~~~~~~~~~~~~~~~~~~~
+
+...
+
+class TemplateExample
+~~~~~~~~~~~~~~~~~~~~~
+
+...
+
+utils.py
+~~~~~~~~
+
+...
+
+
+Examples
+--------
 
 Example
--------
+~~~~~~~
 
 .. figure:: https://github.com/natter1/python_pptx_interface/raw/master/docs/images/example01_title_slide.png
     :width: 500pt
@@ -208,121 +338,17 @@ If you are on windows an have PowerPoint installed, you could use some additiona
     except Exception as e:
         print(e)
 
+General example 01
+~~~~~~~~~~~~~~~~~~
+`general example 01 <https://github.com/natter1/python_pptx_interface/blob/master/pptx_tools/examples/general_example_01.py>`_
 
-class PPTXCreator
------------------
-
-This class provides an easy interface to create a PowerPoint presentation via python-pptx. It has methods to add slides
-and shapes (tables, textboxes, matplotlib figures) setting format by using layouts and stylesheets. It also has methods
-to move slides around, remove empty placeholders or create hyperlinks.
-
-**Methods defined:**
-
-* add_content_slide
-    Add a content slide with hyperlinks to all other slides and puts it to position slide_index.
-* add_latex_formula
-    Add the given latex-like math-formula as an image to the presentation using matplotlib.
-* add_matplotlib_figure
-    Add a motplotlib figure to slide and position it via position.
-    Optional parameter zoom sets image scaling in PowerPoint. Only used if width not in kwargs (default = 1.0).
-* add_slide
-    Add a new slide to presentation. If no layout is given, default_layout is used.
-* add_table
-    Add a table shape with given table_data at position using table_style. (table_data: outer iter -> rows, inner iter cols; auto_merge: not implemented jet)
-* add_text_box
-    Add a text box with given text using given position and font. Uses self.default_position if no position is given.
-* add_title_slide
-    Add a new slide to presentation. If no layout is given, title_layout is used.
-* move_slide
-    Move the given slide to position new_index.
-* save
-    Save presentation under the given filename.
-* save_as_pdf
-    Save the presentation as pdf under the given filenmae. Needs PowerPoint installed.
-* save_as_png
-   Saves the presentation as PNG's in the given folder. Needs PowerPoint installed.
-
-**Static methods defined:**
-
-* create_hyperlink(run: pptx.text.text._Run, shape: pptx.shapes.autoshape.Shape, to_slide: pptx.slide.Slide)
-    Make the given run a hyperlink to to_slide.
-* remove_unpopulated_shapes(slide: pptx.slide.Slide)
-    Removes empty placeholders (e.g. due to layout) from slide. Further testing needed.
-
-**Properties defines:**
-
-* prs: python-pptx Presentation object
-* slides: list of all slides in presentation
-* template: used template file
-* title_layout: laxout used for title slide
-* default_layout: default layout
-* default_position: used, when no PPTXPosition is given to add_table/add_text_box/... methods
-
-
-class PPTXPosition
-------------------
-
-To position shapes in a slide, many methods of PPTXCreator except a PPTXPosition parameter. It allows to give a position
-relative to slide width and high (as a fraction). Additionally ypou can specify the position in inches starting from the
-relative position. Some stylesheets e.g. PPTXTableStyle can also have an optional PPTXPosition attribute. In that case
-writing the style to a shape will also set its position.
-
-Stylesheets
------------
-While python-pptx-interface can load a template file with placeholders, the intended use case is more focused on
-creating and positioning shapes like tables, pictures, textboxes etc. directly in python. Therefore all unused
-placeholders are removed by default, when creating a new slide. As it can be quite tedious to do all the necessary
-formatting directly using python-pptx, this package provides some style sheet like classes, to define a certain format
-and than "write" it to the created shapes. In general python-pptx-interface styles only change parameters, that
-have been set. E.g. when creating a PPTXFontStyle instance and setting the font size, using this style will only
-change the font size, but not color, bold ... attributes. Beside setting an attribute or not changing an attribute
-there is a third case - using the default value as it is defined e.g. in the master slide. For that case, the value
-**_USE_DEFAULT** can be used.
-
-**To be consistent, python-pptx-interface will not change anything if an attribute is set to None.
-This can differ from the pyrhon-pptx behaviour in some cases, where None means "use default".**
-
-class PPTXFontStyle
-~~~~~~~~~~~~~~~~~~~
-`font-style example <https://github.com/natter1/python_pptx_interface/blob/master/pptx_tools/examples/font_style_example_01.py>`_
-...
-
-
-class PPTXParagraphStyle
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-...
-
-class PPTXTableStyle
-~~~~~~~~~~~~~~~~~~~~
-`table-style example <https://github.com/natter1/python_pptx_interface/blob/master/pptx_tools/examples/table_style_example_01.py>`_,
-...
-
-class PPTXFillStyle
-~~~~~~~~~~~~~~~~~~~
-
-...
-
-Working with templates
-----------------------
-
-...
-
-class AbstractTemplate
-~~~~~~~~~~~~~~~~~~~~~~
-
-...
-
-class TemplateExample
+Font style example 01
 ~~~~~~~~~~~~~~~~~~~~~
+`font style example 01 <https://github.com/natter1/python_pptx_interface/blob/master/pptx_tools/examples/font_style_example_01.py>`_
 
-...
-
-utils.py
---------
-
-...
-
+Table style example 01
+~~~~~~~~~~~~~~~~~~~~~~
+`table style example 01 <https://github.com/natter1/python_pptx_interface/blob/master/pptx_tools/examples/table_style_example_01.py>`_
 
 Requirements
 ------------

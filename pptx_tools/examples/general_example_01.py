@@ -48,13 +48,13 @@ def run(save_dir: str):
     PPTXFontStyle.lanaguage_id = MSO_LANGUAGE_ID.ENGLISH_UK
     PPTXFontStyle.name = "Roboto"
 
-    title_slide = pp.add_title_slide("Example presentation")
+    title_slide = pp.add_title_slide("General example 01 - title slide")
     font = font_title()  # returns a PPTXFontStyle instance with bold font and size = 32 Pt
     font.write_shape(title_slide.shapes.title)  # change font attributes for all paragraphs in shape
 
-    slide2 = pp.add_slide("page2")
-    pp.add_slide("page3")
-    pp.add_slide("page4")
+    slide2 = pp.add_slide("General example 01 - page2")
+    pp.add_slide("General example 01 - page3")
+    pp.add_slide("General example 01 - page4")
     pp.add_content_slide()  # add slide with hyperlinks to all other slides
 
     text = "This text has three paragraphs. This is the first.\n" \
@@ -96,8 +96,8 @@ def run(save_dir: str):
         pp.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.3, 0.4, fig.get_figwidth(), 0.0), zoom=0.5)
         pp.add_matplotlib_figure(fig, title_slide, PPTXPosition(0.3, 0.4, fig.get_figwidth(), 1.5), zoom=0.6)
 
-        pp.add_text_box(title_slide, "Use latex-like syntax \nto create formula:", PPTXPosition(0.75, 0.22))
-        pp.add_latex_formula(f"\mu={5}^{5}", title_slide, PPTXPosition(0.74, 0.35))
+        pp.add_text_box(title_slide, "Use latex-like syntax \nto create formula:", PPTXPosition(0.748, 0.23))
+        pp.add_latex_formula(f"\mu={5}^{5}", title_slide, PPTXPosition(0.75, 0.35))
         formula02 = "\\int_0^\\infty e^{-x^2} dx=\\frac{\\sqrt{\\pi}}{2}"
         pp.add_latex_formula(formula02, title_slide, PPTXPosition(0.75, 0.45))
         pp.add_latex_formula(formula02, title_slide, PPTXPosition(0.75, 0.55), font_size=24, color="red")

@@ -13,12 +13,12 @@ from pptx_tools.templates import TemplateExample
 
 def run(save_dir: str):
     pp = PPTXCreator(TemplateExample())
-    slide_01 = pp.add_slide("Table style example presentation slide 01")
-    slide_02 = pp.add_slide("Table style example presentation slide 02")
-    slide_03 = pp.add_slide("Table style example presentation slide 03")
-    slide_04 = pp.add_slide("Table style example presentation slide 04")
-    slide_05 = pp.add_slide("Table style example presentation slide 05")
-    slide_06 = pp.add_slide("Table style example presentation slide 06")
+    slide_01 = pp.add_slide("Table style example 01 - slide 01")
+    slide_02 = pp.add_slide("Table style example 01 - slide 02")
+    slide_03 = pp.add_slide("Table style example 01 - slide 03")
+    slide_04 = pp.add_slide("Table style example 01 - slide 04")
+    slide_05 = pp.add_slide("Table style example 01 - slide 05")
+    slide_06 = pp.add_slide("Table style example 01 - slide 06")
 
     # data for a table with 5 rows and 3 cols.
     table_data = []
