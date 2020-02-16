@@ -14,11 +14,14 @@ python_pptx_interface
 |
 
 `python-pptx <https://github.com/scanny/python-pptx.git>`_ is a great module to create pptx-files.
-But it it can be challenging to master the complex syntax. This module tries to present an easier interface
+But it can be challenging to master the complex syntax. This module tries to present an easier interface
 for python-pptx to create PowerPoint files. It also adds some still missing features like moving slides,
-create links to other slides or remove unused place-holders.
+create links to other slides or remove unused place-holders. If matplotlib is installed, it can be used,
+to write formulas with latex syntax. And if PowerPoint is available, a presentation could be exported as
+pdf or png(s).
 
 Content
+-------
 
   * `class PPTXCreator <#class-pptxcreator>`__: Create pptx-File from template, incluing methods to add text, tables, figures etc.
   * `class PPTXPosition <#class-pptxposition>`__: Allows positioning as fraction of slide height/width.
@@ -33,9 +36,9 @@ Content
   * `utils.py <#utilspy>`__: A collection of useful functions, eg. to generate PDF or PNG from \*.pptx (needs PowerPoint installed)
   * `Examples <#example>`__: Collection of examples demonstrating how to use python-pptx-interface.
      + `Example <#example>`__: demonstrates usage of some key-features of python-pptx-interface with explanations
-     + `General example 01 <#generalexample01>`__: demonstrates usage of some key-features of python-pptx-interface
-     + `Font style example 01 <#fontstyleexample01>`__
-     + `Table style example 01 <#tablestyleexample01>`__
+     + `General example 01 <#general-example-01>`__: demonstrates usage of some key-features of python-pptx-interface
+     + `Font style example 01 <#font-style-example-01>`__
+     + `Table style example 01 <#table-style-example-01>`__
 
 
 
