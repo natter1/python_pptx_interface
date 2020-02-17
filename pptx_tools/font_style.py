@@ -100,13 +100,11 @@ class PPTXFontStyle:
 
     def _get_write_value(self, new_value, old_value, check_default=True):
         """Used to check for None and use_default(), returning the correct value to write."""
-        result = old_value
-        if new_value is not None:
-            if check_default and (new_value == _USE_DEFAULT):
-                result = None
-            else:
-                result = new_value
-        return result
+        if new_value is None:
+            return old_value
+        if check_default and (new_value == _USE_DEFAULT):
+            return None
+        return new_value
 
     def write_shape(self, shape: Shape) -> None:  # todo: remove? better use write_text_fame
         """
