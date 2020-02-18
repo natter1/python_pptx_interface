@@ -136,7 +136,6 @@ class PPTXCreator:
         figure.patch.set_alpha(alpha)
         return self.add_matplotlib_figure(figure, slide, position)
 
-
     def add_text_box(self, slide, text: str, position: PPTXPosition = None, font: PPTXFontStyle = None) -> Shape:
         """
         Add a text box with given text using given position and font.

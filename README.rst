@@ -124,6 +124,7 @@ class PPTXFontStyle
 class PPTXParagraphStyle
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
+`paragraph-style example <https://github.com/natter1/python_pptx_interface/blob/master/pptx_tools/examples/paragraph_style_example_01.py>`_,
 ...
 
 class PPTXTableStyle
