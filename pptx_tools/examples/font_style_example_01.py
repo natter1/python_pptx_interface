@@ -9,6 +9,7 @@ from pptx.enum.lang import MSO_LANGUAGE_ID
 from pptx.enum.text import MSO_TEXT_UNDERLINE_TYPE
 
 from pptx_tools.creator import PPTXCreator
+from pptx_tools.enumerations import TEXT_STRIKE_VALUES, TEXT_CAPS_VALUES
 from pptx_tools.fill_style import PPTXFillStyle
 from pptx_tools.font_style import PPTXFontStyle
 from pptx_tools.position import PPTXPosition
@@ -36,14 +37,18 @@ def run(save_dir: str):
     my_font.size = 16
     text_shape_01 = pp.add_text_box(title_slide, text_01, PPTXPosition(0.02, 0.24), my_font)
 
-    my_font.set(size=22, bold=True, language_id=MSO_LANGUAGE_ID.GERMAN)
+    my_font.set(size=22, bold=True, language_id=MSO_LANGUAGE_ID.GERMAN,
+                strikethrough=TEXT_STRIKE_VALUES.SingleStrike,
+                caps=TEXT_CAPS_VALUES.All)
+
     my_font.write_paragraph(text_shape_01.text_frame.paragraphs[1])
-    my_font._write_font_experimentell(text_shape_01.text_frame.paragraphs[1].font)  # write all_caps and strikethrough
 
     my_font.set(size=18, bold=False, italic=True, name="Vivaldi",
                 language_id=MSO_LANGUAGE_ID.ENGLISH_UK,
                 underline=MSO_TEXT_UNDERLINE_TYPE.WAVY_DOUBLE_LINE,
-                color_rgb=(255, 0, 0))
+                color_rgb=(255, 0, 0),
+                strikethrough=None,
+                caps=None)
     my_font.write_paragraph(text_shape_01.text_frame.paragraphs[2])
 
     text_02 = "This text uses copied font."

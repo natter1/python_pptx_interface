@@ -13,6 +13,7 @@ from pptx.text.text import _Paragraph
 from pptx.text.text import _Run
 from pptx.util import Pt
 
+from pptx_tools.enumerations import TEXT_CAPS_VALUES, TEXT_STRIKE_VALUES
 from pptx_tools.fill_style import PPTXFillStyle
 from pptx_tools.utils import _USE_DEFAULT
 
@@ -36,7 +37,7 @@ class PPTXFontStyle:
         #  If set to use_default(), the bold, italic ... setting is cleared and is inherited
         #  from an enclosing shape’s setting, or a setting in a style or master
         self.bold: Union[bool, _USE_DEFAULT, None] = None
-        self.italic: Optional[bool, _USE_DEFAULT, None] = None
+        self.italic: Union[bool, _USE_DEFAULT, None] = None
         self.underline: Union[MSO_TEXT_UNDERLINE_TYPE, _USE_DEFAULT, bool, None] = None
 
         # use class attribute; instance attribute only when changed by user
@@ -51,6 +52,10 @@ class PPTXFontStyle:
         self._color_rgb: Optional[RGBColor] = None
         # fil.fore_color changes font color; also gradient or image might be useful (not implemented in FillStyle jet)
         self.fill_style: Optional[PPTXFillStyle] = None  # PPTXFillStyle()
+
+        # experimental (not implemented in python-pptx):
+        self.caps: Optional[TEXT_CAPS_VALUES] = None
+        self.strikethrough: Optional[TEXT_STRIKE_VALUES] = None
 
     @property
     def color_rgb(self):
@@ -70,8 +75,16 @@ class PPTXFontStyle:
         self.bold = font.bold
         self.italic = font.italic
         self.name = font.name
-        self.size = font.size.pt  # todo: convert to Pt ?
+        self.size = font.size.pt
         self.underline = font.underline
+        try:
+            self.caps = TEXT_CAPS_VALUES(font._element.attrib['cap'])
+        except KeyError:
+            self.caps = None
+        try:
+            self.strikethrough = TEXT_STRIKE_VALUES(font._element.attrib['strike'])
+        except KeyError:
+            self.strikethrough = None
         return self
 
     def write_font(self, font: Font) -> None:
@@ -98,7 +111,23 @@ class PPTXFontStyle:
         if self.fill_style is not None:
             self.fill_style.write_fill(font.fill)
 
-    def _get_write_value(self, new_value, old_value, check_default=True):
+        self._write_caps(font)
+        self._write_strikethrough(font)
+
+    def _write_caps(self, font: Font):
+        if self.caps is None:
+            return
+        else:
+            font._element.attrib['cap'] = self.caps.value
+
+    def _write_strikethrough(self, font: Font):
+        if self.strikethrough is None:
+            return
+        else:
+            font._element.attrib['strike'] = self.strikethrough.value
+
+    @staticmethod
+    def _get_write_value(new_value, old_value, check_default=True):
         """Used to check for None and use_default(), returning the correct value to write."""
         if new_value is None:
             return old_value
@@ -106,16 +135,22 @@ class PPTXFontStyle:
             return None
         return new_value
 
-    def write_shape(self, shape: Shape) -> None:  # todo: remove? better use write_text_fame
+    def write_shape(self, shape: Shape) -> None:
         """
         Write attributes to all paragraphs in given pptx.shapes.autoshape.Shape.
-        Raises TypeError if given shape has no text_frame.
+        Raises TypeError if given shape has no text_frame or table.
         """
-        if not shape.has_text_frame:
-            raise TypeError("Cannot write font for given shape (has no text_frame)")
-        self.write_text_frame(shape.text_frame)
+        if shape.has_text_frame:
+            self.write_text_frame(shape.text_frame)
+        elif shape.has_table:
+            pass  # todo
+        else:
+            raise TypeError("Cannot write font for given shape (has no text_frame or table)")
 
     def write_text_frame(self, text_frame):
+        """
+        Write attributes to all paragraphs in given text_frame.
+        """
         for paragraph in text_frame.paragraphs:
             self.write_paragraph(paragraph)
 
@@ -127,30 +162,15 @@ class PPTXFontStyle:
         """ Write attributes to given run"""
         self.write_font(run.font)
 
-    @classmethod
-    def copy_font(cls, _from: Font, _to: Font) -> None:
-        """Copies settings from one pptx.text.text.Font to another."""
-        font_style=cls()
-        font_style.read_font(_from)
-        font_style.write_font(_to)
-        # _to.bold = _from.bold
-        # # todo: color is ColorFormat object
-        # # _to.set_color = _from.color
-        # # todo: fill is FillFormat object
-        # # _to.fill = _from.fill
-        # _to.italic = _from.italic
-        # _to.language_id = _from.language_id
-        # _to.name = _from.name
-        # _to.size = _from.size
-        # _to.underline = _from.underline
-
     def set(self, bold: Optional[bool] = _DO_NOT_CHANGE,
             italic: Optional[bool] = _DO_NOT_CHANGE,
             language_id: MSO_LANGUAGE_ID = _DO_NOT_CHANGE,
             name: Optional[str] = _DO_NOT_CHANGE,
             size: Optional[int] = _DO_NOT_CHANGE,
             underline: Union[MSO_TEXT_UNDERLINE_TYPE, bool, None] = _DO_NOT_CHANGE,
-            color_rgb: Union[RGBColor, Tuple[any, any, any]] = _DO_NOT_CHANGE
+            color_rgb: Union[RGBColor, Tuple[any, any, any]] = _DO_NOT_CHANGE,
+            caps: Optional[TEXT_CAPS_VALUES] = _DO_NOT_CHANGE,
+            strikethrough: Optional[TEXT_STRIKE_VALUES] = _DO_NOT_CHANGE
             ) -> 'PPTXFontStyle':
         """Convenience method to set several font attributes together."""
         if bold is not _DO_NOT_CHANGE:
@@ -167,18 +187,22 @@ class PPTXFontStyle:
             self.underline = underline
         if color_rgb is not _DO_NOT_CHANGE:
             self.color_rgb = color_rgb
+        if caps is not _DO_NOT_CHANGE:
+            self.caps = caps
+        if strikethrough is not _DO_NOT_CHANGE:
+            self.strikethrough = strikethrough
         return self
 
         # -----------------------------------------------------------------------------------------------
         # ----------------------------------- experimentell methods -------------------------------------
         # -----------------------------------------------------------------------------------------------
-    def _write_font_experimentell(self, font: Font,all_caps: bool = True, strikethrough: bool = True):
-        if all_caps:
-            font._element.attrib['cap'] = "all"
-        else:
-            pass
-
-        if strikethrough:
-            font._element.attrib['strike'] = "sngStrike"
-        else:
-            pass
+    # def _write_font_experimentell(self, font: Font,all_caps: bool = True, strikethrough: bool = True):
+    #     if all_caps:
+    #         font._element.attrib['cap'] = "all"
+    #     else:
+    #         pass
+    #
+    #     if strikethrough:
+    #         font._element.attrib['strike'] = "sngStrike"
+    #     else:
+    #         pass

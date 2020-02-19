@@ -77,6 +77,13 @@ def change_paragraph_text_to(paragraph, text):
     font.write_paragraph(paragraph)
 
 
+def copy_font(_from: 'Font', _to: 'Font') -> None:
+    """Copies settings from one pptx.text.text.Font to another."""
+    from pptx_tools.font_style import PPTXFontStyle  # local import to prevent circle import error
+    font_style = PPTXFontStyle()
+    font_style.read_font(_from)
+    font_style.write_font(_to)
+
 # ----------------------------------------------------------------------------------------------------------------------
 # The following functions need an installed PowerPoint and will only work on windows systems.
 # ----------------------------------------------------------------------------------------------------------------------
