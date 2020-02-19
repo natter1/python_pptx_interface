@@ -39,7 +39,7 @@ class PPTXTableStyle:
     def _write_all_cells(self, table: Table) -> None:
         for cell in iter_table_cells(table):
             if self.font_style is not None:
-                # font is managed per cell; there is no "table font"
+                # paragraph is managed per cell; there is no "table paragraph"
                 self.font_style.write_text_frame(cell.text_frame)
             if self.cell_style is not None:
                 self.cell_style.write_cell(cell)

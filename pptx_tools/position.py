@@ -26,8 +26,8 @@ class PPTXPosition:
         :param presentation: pptx.prs (needed for slide width and height)
         :param left_rel: distance from slide left (relative to slide width)
         :param top_rel: distance from slide top (relative to slide height)
-        :param left: "left" to default_position figure [inches] starting from rel_left
-        :param top: "top" to default_position figure [inches] starting from rel_top
+        :param left: left position [inches] starting from rel_left
+        :param top: top position [inches] starting from rel_top
         """
 
         if presentation:
@@ -47,7 +47,7 @@ class PPTXPosition:
         self.left = left
         self.top = top
 
-    def dict_for_position(self, left_rel=0.0, top_rel=0.0, left=0, top=0):
+    def _dict_for_position(self, left_rel=0.0, top_rel=0.0, left=0, top=0):
         """
         Returns kwargs dict for given default_position. Does not change attributes of self
         :param left_rel: float [slide_width]
@@ -56,8 +56,8 @@ class PPTXPosition:
         :param top: float [inch]
         :return: dictionary
         """
-        left = self.fraction_width_to_inch(left_rel) + Inches(left)
-        top = self.fraction_height_to_inch(top_rel) + Inches(top)
+        left = self._fraction_width_to_inch(left_rel) + Inches(left)
+        top = self._fraction_height_to_inch(top_rel) + Inches(top)
         return {"left": left, "top": top}
 
     def dict(self):
@@ -65,18 +65,18 @@ class PPTXPosition:
         This method returns a kwargs dict containing "left" and "top".
         :return: dictionary
         """
-        return self.dict_for_position(self.left_rel, self.top_rel, self.left, self.top)
+        return self._dict_for_position(self.left_rel, self.top_rel, self.left, self.top)
 
     def tuple(self):
         """
-        This method returns a args tuple containing "left" and "top".
+        This method returns an args tuple containing "left" and "top".
         :return: tuple
         """
         left = self.dict()["left"]
         top = self.dict()["top"]
         return left, top
 
-    def fraction_width_to_inch(self, fraction):
+    def _fraction_width_to_inch(self, fraction):
         """
         Returns a width in inches calculated as a fraction of total slide-width.
         :param fraction: float
@@ -85,7 +85,7 @@ class PPTXPosition:
         result = Inches(self.prs.slide_width.inches * fraction)
         return result
 
-    def fraction_height_to_inch(self, fraction):
+    def _fraction_height_to_inch(self, fraction):
         """
         Returns a height in inches calculated as a fraction of total slide-height.
         :param fraction: float

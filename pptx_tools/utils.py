@@ -48,10 +48,13 @@ class _USE_DEFAULT:  # using a class allows typing
     def __str__(self):
         return "This is a default value, used to express that a value should become default, which is indicated with " \
                "None in python-pptx. But in python-pptx-interface styles None generally means 'do not change'. " \
-               "An example would be 'PPTXFontStyle.size = None'. This would ensure, that the font size will not be " \
-               "changed when calling PPTXFontStyle.write_font(). But to remove a customized font size, e.g. in a run, " \
+               "An example would be 'PPTXFontStyle.size = None'. This would ensure, that the paragraph size will not be " \
+               "changed when calling PPTXFontStyle.write_font(). But to remove a customized paragraph size, e.g. in a run, " \
                "the value has to be set to None in python-pptx. Thats done with 'PPTXFontStyle.size = use_default'."
 
+class _DO_NOT_CHANGE:
+    def __str__(self):
+        return """used to tell PPTXFontStyle.set() / PPTXParagraphStyle.set() ... to not change a value"""
 
 def use_default():
     return _USE_DEFAULT

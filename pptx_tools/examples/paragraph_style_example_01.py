@@ -4,6 +4,8 @@ This script demonstrates how to work with paragraph-styles in python-pptx-interf
 """
 import os
 
+from pptx.util import Inches
+
 from pptx_tools.creator import PPTXCreator
 from pptx_tools.paragraph_style import PPTXParagraphStyle
 from pptx_tools.position import PPTXPosition
@@ -19,6 +21,8 @@ def run(save_dir: str):
            "Das ist der zweite ...\n" \
            "... and the third."
     text_shape = pp.add_text_box(title_slide, text, PPTXPosition(0.02, 0.24))
+    text_shape.width = Inches(6)
+    text_shape.height = Inches(2)
     paragraph_style = PPTXParagraphStyle()
     paragraph_style.alignment = PP_PARAGRAPH_ALIGNMENT.CENTER
     paragraph_style.write_paragraph(text_shape.text_frame.paragraphs[0])

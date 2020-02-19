@@ -15,21 +15,16 @@ from pptx.util import Pt
 
 from pptx_tools.enumerations import TEXT_CAPS_VALUES, TEXT_STRIKE_VALUES
 from pptx_tools.fill_style import PPTXFillStyle
-from pptx_tools.utils import _USE_DEFAULT
-
-
-class _DO_NOT_CHANGE:
-    def __str__(self):
-        return """used to tell PPTXFontStyle.set() to not change a value"""
+from pptx_tools.utils import _USE_DEFAULT, _DO_NOT_CHANGE
 
 
 class PPTXFontStyle:
     """
     Helper class to deal with fonts in python-pptx. The internal class pptx.text.text.Font is limited, as it
     always needs an existing Text/Character/... for initializing and also basic functionality like assignment
-    of one font to another is missing.
+    of one paragraph to another is missing.
     """
-    # default language and font; no _USE_DEFAULT for language_id -> use MSO_LANGUAGE_ID.NONE
+    # default language and paragraph; no _USE_DEFAULT for language_id -> use MSO_LANGUAGE_ID.NONE
     language_id: Union[MSO_LANGUAGE_ID, _USE_DEFAULT, None] = MSO_LANGUAGE_ID.ENGLISH_UK  # MSO_LANGUAGE_ID.GERMAN
     name: Union[str, _USE_DEFAULT, None] = "Roboto"  # "Arial"  # "Arial Narrow"
 
@@ -50,7 +45,7 @@ class PPTXFontStyle:
 
         # todo: color is ColorFormat object
         self._color_rgb: Optional[RGBColor] = None
-        # fil.fore_color changes font color; also gradient or image might be useful (not implemented in FillStyle jet)
+        # fil.fore_color changes paragraph color; also gradient or image might be useful (not implemented in FillStyle jet)
         self.fill_style: Optional[PPTXFillStyle] = None  # PPTXFillStyle()
 
         # experimental (not implemented in python-pptx):
@@ -143,9 +138,11 @@ class PPTXFontStyle:
         if shape.has_text_frame:
             self.write_text_frame(shape.text_frame)
         elif shape.has_table:
-            pass  # todo
+            for cell in shape.table.iter_cells():
+                if not cell.is_spanned:
+                    self.write_text_frame(cell.text_frame)
         else:
-            raise TypeError("Cannot write font for given shape (has no text_frame or table)")
+            raise TypeError("Cannot write paragraph for given shape (has no text_frame or table)")
 
     def write_text_frame(self, text_frame):
         """
@@ -172,7 +169,7 @@ class PPTXFontStyle:
             caps: Optional[TEXT_CAPS_VALUES] = _DO_NOT_CHANGE,
             strikethrough: Optional[TEXT_STRIKE_VALUES] = _DO_NOT_CHANGE
             ) -> 'PPTXFontStyle':
-        """Convenience method to set several font attributes together."""
+        """Convenience method to set several paragraph attributes together."""
         if bold is not _DO_NOT_CHANGE:
             self.bold = bold
         if italic is not _DO_NOT_CHANGE:
@@ -196,13 +193,13 @@ class PPTXFontStyle:
         # -----------------------------------------------------------------------------------------------
         # ----------------------------------- experimentell methods -------------------------------------
         # -----------------------------------------------------------------------------------------------
-    # def _write_font_experimentell(self, font: Font,all_caps: bool = True, strikethrough: bool = True):
+    # def _write_font_experimentell(self, paragraph: Font,all_caps: bool = True, strikethrough: bool = True):
     #     if all_caps:
-    #         font._element.attrib['cap'] = "all"
+    #         paragraph._element.attrib['cap'] = "all"
     #     else:
     #         pass
     #
     #     if strikethrough:
-    #         font._element.attrib['strike'] = "sngStrike"
+    #         paragraph._element.attrib['strike'] = "sngStrike"
     #     else:
     #         pass

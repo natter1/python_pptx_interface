@@ -138,7 +138,7 @@ class PPTXCreator:
 
     def add_text_box(self, slide, text: str, position: PPTXPosition = None, font: PPTXFontStyle = None) -> Shape:
         """
-        Add a text box with given text using given position and font.
+        Add a text box with given text using given position and paragraph.
         Uses self.default_position if no position is given.
         """
         width = height = Inches(1)  # no auto-resizing of shape -> has to be done inside PowerPoint

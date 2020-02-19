@@ -1,5 +1,5 @@
 """
-This script demonstrates how to work with fonts and font-styles in python-pptx-interface.
+This script demonstrates how to work with fonts and paragraph-styles in python-pptx-interface.
 @author: Nathanael Jöhrmann
 """
 
@@ -21,13 +21,13 @@ def run(save_dir: str):
     filename_pptx = os.path.join(save_dir, "font_style_example_01.pptx")
     pp = PPTXCreator(TemplateExample())
 
-    # default language and font-type for all created PPTXFontStyle instances:
+    # default language and paragraph-type for all created PPTXFontStyle instances:
     PPTXFontStyle.lanaguage_id = MSO_LANGUAGE_ID.ENGLISH_UK
     PPTXFontStyle.name = "Roboto"
 
     title_slide = pp.add_title_slide("Font style example presentation")
-    font = font_title()  # returns a PPTXFontStyle instance with bold font and size = 32 Pt
-    font.write_shape(title_slide.shapes.title)  # change font attributes for all paragraphs in shape
+    font = font_title()  # returns a PPTXFontStyle instance with bold paragraph and size = 32 Pt
+    font.write_shape(title_slide.shapes.title)  # change paragraph attributes for all paragraphs in shape
 
     text_01 = "This text has four paragraphs. This is the first.\n" \
               "Das ist der zweite ...\n" \
@@ -65,7 +65,7 @@ def run(save_dir: str):
 
     my_font.write_paragraph(text_shape_01.text_frame.paragraphs[3])
 
-    text_02 = "This text uses copied font."
+    text_02 = "This text uses copied paragraph."
 
     my_copied_font = PPTXFontStyle()
     my_copied_font.read_font(text_shape_01.text_frame.paragraphs[1].font)

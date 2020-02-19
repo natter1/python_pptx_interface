@@ -9,12 +9,13 @@ from pptx_tools.creator import PPTXCreator
 # from pptx_tools.fill_style import PPTXFillStyle, FillType
 from pptx_tools.enumerations import TEXT_STRIKE_VALUES, TEXT_CAPS_VALUES
 from pptx_tools.font_style import PPTXFontStyle
+from pptx_tools.paragraph_style import PPTXParagraphStyle
 from pptx_tools.position import PPTXPosition
 from pptx_tools.style_sheets import font_title, font_default
 from pptx_tools.templates import TemplateExample
 
 from pptx.enum.lang import MSO_LANGUAGE_ID
-from pptx.enum.text import MSO_TEXT_UNDERLINE_TYPE
+from pptx.enum.text import MSO_TEXT_UNDERLINE_TYPE, PP_PARAGRAPH_ALIGNMENT
 
 try:
     import matplotlib.pyplot as plt
@@ -50,8 +51,8 @@ def run(save_dir: str):
     PPTXFontStyle.name = "Roboto"
 
     title_slide = pp.add_title_slide("General example 01 - title slide")
-    font = font_title()  # returns a PPTXFontStyle instance with bold font and size = 32 Pt
-    font.write_shape(title_slide.shapes.title)  # change font attributes for all paragraphs in shape
+    font = font_title()  # returns a PPTXFontStyle instance with bold paragraph and size = 32 Pt
+    font.write_shape(title_slide.shapes.title)  # change paragraph attributes for all paragraphs in shape
 
     slide2 = pp.add_slide("General example 01 - page2")
     pp.add_slide("General example 01 - page3")
@@ -85,7 +86,10 @@ def run(save_dir: str):
     table_data.append([4, slide2, 6])  # there is specific type needed for entries (implemented as text=f"{entry}")
     table_data.append(["", 8, 9])
 
-    pp.add_table(title_slide, table_data, PPTXPosition(0.02, 0.4))
+    table = pp.add_table(title_slide, table_data, PPTXPosition(0.02, 0.4))
+    paragraph_style = PPTXParagraphStyle()
+    paragraph_style.set(alignment=PP_PARAGRAPH_ALIGNMENT.CENTER)
+    paragraph_style.write_shape(table)
 
 
     if matplotlib_installed:

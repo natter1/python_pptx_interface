@@ -82,23 +82,38 @@ to move slides around, remove empty placeholders or create hyperlinks.
 * remove_unpopulated_shapes(slide: pptx.slide.Slide)
     Removes empty placeholders (e.g. due to layout) from slide. Further testing needed.
 
-**Properties defines:**
+**Properties defined:**
 
-* prs: python-pptx Presentation object
-* slides: list of all slides in presentation
-* template: used template file
-* title_layout: laxout used for title slide
-* default_layout: default layout
-* default_position: used, when no PPTXPosition is given to add_table/add_text_box/... methods
+* **prs**: python-pptx Presentation object
+* **slides**: list of all slides in presentation
+* **template**: used template file
+* **title_layout**: laxout used for title slide
+* **default_layout**: default layout
+* **default_position**: used, when no PPTXPosition is given to add_table/add_text_box/... methods
 
 
 class PPTXPosition
 ------------------
 
 To position shapes in a slide, many methods of PPTXCreator except a PPTXPosition parameter. It allows to give a position
-relative to slide width and high (as a fraction). Additionally ypou can specify the position in inches starting from the
+relative to slide width and high (as a fraction). Additionally you can specify the position in inches starting from the
 relative position. Some stylesheets e.g. PPTXTableStyle can also have an optional PPTXPosition attribute. In that case
 writing the style to a shape will also set its position.
+
+**Methods defined:**
+
+* dict
+    Returns a kwargs dict containing "left" and "top".
+* tuple
+    Returns an args tuple containing "left" and "top".
+
+**Properties defined:**
+
+* **left**: left position [inches] starting from rel_left
+* **left_rel**: distance from slide left (relative to slide width)
+* **prs**: python-pptx Presentation object
+* **top**: top position [inches] starting from rel_top
+* **top_rel**: distance from slide top (relative to slide height)
 
 Stylesheets
 -----------
@@ -118,14 +133,66 @@ This can differ from the pyrhon-pptx behaviour in some cases, where None means "
 class PPTXFontStyle
 ~~~~~~~~~~~~~~~~~~~
 `font-style example <https://github.com/natter1/python_pptx_interface/blob/master/pptx_tools/examples/font_style_example_01.py>`_
-...
+
+**Methods defined:**
+
+* read_font
+    Read attributes from a pptx.text.text.Font object.
+* set
+    Convenience method to set several font attributes together.
+* write_font
+    Write attributes to a pptx.text.text.Font object.
+* write_paragraph
+    Write attributes to given paragraph.
+* write_run
+    Write attributes to given run.
+* write_shape
+    Write attributes to all paragraphs in given pptx.shapes.autoshape.Shape.
+    Raises TypeError if given shape has no text_frame or table.
+* write_text_frame
+    Write attributes to all paragraphs in given text_frame.
+
+**Properties defined:**
+
+* **bold**
+* **caps**
+* **color_rgb**
+* **fill_style**
+* **italic**
+* **underline**
+* **size**
+* **strikethrough**
+
 
 
 class PPTXParagraphStyle
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 `paragraph-style example <https://github.com/natter1/python_pptx_interface/blob/master/pptx_tools/examples/paragraph_style_example_01.py>`_,
-...
+
+**Methods defined:**
+
+* read_paragraph
+    Read attributes from a _Paragraph object.
+* set
+    Convenience method to set several paragraph attributes together.
+* write_paragraph
+    Write attributes to given paragraph.
+* write_shape
+    Write attributes to all paragraphs in given pptx.shapes.autoshape.Shape.
+    Raises TypeError if given shape has no text_frame or table.
+* write_text_frame
+    Write attributes to all paragraphs in given text_frame.
+
+**Properties defined:**
+
+* **alignment**
+* **font_style**
+* **level**
+* **line_spacing**
+* **space_after**
+* **space_before**
+
 
 class PPTXTableStyle
 ~~~~~~~~~~~~~~~~~~~~

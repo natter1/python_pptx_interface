@@ -1,6 +1,6 @@
 """
 This file is a simple example on how to use style sheets. If you want to use customized
-font styles in your project, you should create a customized version.
+paragraph styles in your project, you should create a customized version.
 @author: Nathanael Jöhrmann
 """
 from pptx.util import Inches
@@ -41,7 +41,7 @@ def table_no_header() -> PPTXTableStyle:
     return result
 
 
-def font_default() -> PPTXFontStyle:  # font for normal text
+def font_default() -> PPTXFontStyle:  # paragraph for normal text
     result = PPTXFontStyle()
     # result.language_id = MY_DEFAULT_LANGUAGE
     # result.name = MY_DEFAULT_FONT_NAME
@@ -55,7 +55,7 @@ def font_small_text() -> PPTXFontStyle:
     return result
 
 
-def font_title() -> PPTXFontStyle:  # font for presentation title
+def font_title() -> PPTXFontStyle:  # paragraph for presentation title
     result = font_default()
     result.size = 32
     result.bold = True
@@ -76,5 +76,5 @@ def font_sub_title() -> PPTXFontStyle:
 
 def paragraph_default():
     result = PPTXParagraphStyle()
-    result.font = font_default()
+    result.font_style = font_default()
     result.alignment = PP_PARAGRAPH_ALIGNMENT.LEFT

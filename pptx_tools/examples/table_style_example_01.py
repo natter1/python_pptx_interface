@@ -34,7 +34,7 @@ def run(save_dir: str):
     #         1) the table is positioned in the top left corner - overlapping the title
     #         2) the first row is formated differently (like a column header)
     #         3) all columns have the same width (1 inch)
-    #         4) the table width is too small (for the used font size)
+    #         4) the table width is too small (for the used paragraph size)
 
     # Lets handle the the position first using optional PPTXPosition parameter
     table_02 = pp.add_table(slide_02, table_data, PPTXPosition(0.02, 0.14))
@@ -56,7 +56,7 @@ def run(save_dir: str):
     table_style.row_banding = False
     table_04 = pp.add_table(slide_04, table_data, table_style=table_style)
 
-    # we could also add a font-style and a cell-style
+    # we could also add a paragraph-style and a cell-style
     table_style.font_style = PPTXFontStyle().set(italic=True, name="Arial", color_rgb=(100, 200, 30))
     # todo: cell-style
     table_05 = pp.add_table(slide_05, table_data, table_style=table_style)
