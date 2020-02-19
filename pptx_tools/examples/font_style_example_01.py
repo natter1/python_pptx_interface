@@ -10,7 +10,7 @@ from pptx.enum.text import MSO_TEXT_UNDERLINE_TYPE
 
 from pptx_tools.creator import PPTXCreator
 from pptx_tools.enumerations import TEXT_STRIKE_VALUES, TEXT_CAPS_VALUES
-from pptx_tools.fill_style import PPTXFillStyle
+from pptx_tools.fill_style import PPTXFillStyle, FillType
 from pptx_tools.font_style import PPTXFontStyle
 from pptx_tools.position import PPTXPosition
 from pptx_tools.style_sheets import font_title
@@ -29,9 +29,10 @@ def run(save_dir: str):
     font = font_title()  # returns a PPTXFontStyle instance with bold font and size = 32 Pt
     font.write_shape(title_slide.shapes.title)  # change font attributes for all paragraphs in shape
 
-    text_01 = "This text has three paragraphs. This is the first.\n" \
-           "Das ist der zweite ...\n" \
-           "... and the third."
+    text_01 = "This text has four paragraphs. This is the first.\n" \
+              "Das ist der zweite ...\n" \
+              "... the third ...\n" \
+              "... and the last."
 
     my_font = PPTXFontStyle()
     my_font.size = 16
@@ -49,7 +50,20 @@ def run(save_dir: str):
                 color_rgb=(255, 0, 0),
                 strikethrough=None,
                 caps=None)
+
     my_font.write_paragraph(text_shape_01.text_frame.paragraphs[2])
+
+    my_font = PPTXFontStyle()
+    my_font.set(size=52, bold=True)
+    my_fill = PPTXFillStyle()
+    my_fill.fill_type = FillType.PATTERNED
+    my_fill.fore_color_rgb = (255, 0, 0)
+    my_fill.back_color_rgb = (0, 0, 255)
+    from pptx.enum.dml import MSO_PATTERN_TYPE
+    my_fill.pattern = MSO_PATTERN_TYPE.PERCENT_50
+    my_font.fill_style = my_fill
+
+    my_font.write_paragraph(text_shape_01.text_frame.paragraphs[3])
 
     text_02 = "This text uses copied font."
 

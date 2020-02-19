@@ -77,13 +77,7 @@ def run(save_dir: str):
                 color_rgb=(255, 0, 0),
                 strikethrough=None,
                 caps=None)
-    # my_fill = PPTXFillStyle()
-    # my_fill.fill_type = FillType.PATTERNED
-    # my_fill.fore_color_rgb = (255, 0, 0)  # fill.fore_color for font seems to change font color
-    # my_fill.back_color_rgb = (0, 0, 255)
-    # from pptx.enum.dml import MSO_PATTERN_TYPE
-    # my_fill.pattern = MSO_PATTERN_TYPE.PERCENT_50
-    # my_font.fill_style = my_fill
+
     my_font.write_paragraph(text_shape.text_frame.paragraphs[2])
 
     table_data = []
