@@ -197,7 +197,35 @@ class PPTXParagraphStyle
 class PPTXTableStyle
 ~~~~~~~~~~~~~~~~~~~~
 `table-style example <https://github.com/natter1/python_pptx_interface/blob/master/pptx_tools/examples/table_style_example_01.py>`_,
-...
+
+**Methods defined:**
+
+* set
+    Convenience method to set several table attributes together.
+* set_width_as_fraction
+    Set table width as fraction of slide width.
+* write_paragraph
+    Write attributes to given paragraph.
+* write_shape
+    """Write attributes to table in given pptx.shapes.autoshape.Shape."""
+    Raises TypeError if given shape has no text_frame or table.
+* write_table
+    """Write attributes to table object."""
+
+**Properties defined:**
+
+* **cell_style**
+* **col_banding**
+* **col_ratios**
+* **first_row_header**
+* **font_style**
+* **line_spacing**
+* **position**
+* **row_banding**
+* **space_after**
+* **space_before**
+* **width**
+
 
 class PPTXFillStyle
 ~~~~~~~~~~~~~~~~~~~
