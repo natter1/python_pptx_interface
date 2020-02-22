@@ -200,12 +200,12 @@ class PPTXTableStyle
 
 **Methods defined:**
 
+* read_table
+    Read attributes from a Table object, ignoring font and cell style.
 * set
     Convenience method to set several table attributes together.
 * set_width_as_fraction
     Set table width as fraction of slide width.
-* write_paragraph
-    Write attributes to given paragraph.
 * write_shape
     """Write attributes to table in given pptx.shapes.autoshape.Shape."""
     Raises TypeError if given shape has no text_frame or table.

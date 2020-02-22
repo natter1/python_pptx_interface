@@ -31,11 +31,22 @@ class PPTXTableStyle:
         self.cell_style: Optional[PPTXCellStyle] = None  # PPTXCellStyle()
         self.first_row_header: Optional[bool] = None  # False  # special formatting for first row?
         self.col_banding: Optional[bool] = None  # False  # slightly alternate color brightness per col
-        self.row_banding: Optional[bool] = None  #True  # slightly alternate color brightness per row
+        self.row_banding: Optional[bool] = None  # True  # slightly alternate color brightness per row
 
         self.width: Optional[float] = None  # in [Inches]; don't use Inches() - is transformed in _write_col_sizes!!!
         self.col_ratios = None
         self.position = None
+
+    def read_table(self, table: Table):
+        """Read attributes from a Table object, ignoring font and cell style."""
+        self.first_row_header = table._tbl.firstRow
+        self.col_banding = table.vert_banding
+        self.row_banding = table.horz_banding
+
+        self.col_ratios = []
+        for column in table.columns:
+            self.col_ratios.append(column.width.inches)
+        self.width = sum(self.col_ratios)
 
     def set(self, font_style: Optional[PPTXFontStyle] = _DO_NOT_CHANGE,
             cell_style: Optional[PPTXCellStyle] = _DO_NOT_CHANGE,
