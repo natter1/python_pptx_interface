@@ -232,6 +232,25 @@ class PPTXFillStyle
 
 ...
 
+**Methods defined:**
+
+* set
+    Convenience method to set several fill attributes together.
+* write_fill
+    Write attributes to a FillFormat object.
+
+**Properties defined:**
+
+* **fill_type**
+* **fore_color_rgb**
+* **fore_color_mso_theme**
+* **fore_color_brightness**
+* **back_color_rgb**
+* **back_color_mso_theme**
+* **back_color_brightness**
+* **pattern**
+
+
 Working with templates
 ----------------------
 

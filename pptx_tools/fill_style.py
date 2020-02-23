@@ -11,6 +11,9 @@ from pptx.enum.base import EnumValue
 from pptx.enum.dml import MSO_THEME_COLOR_INDEX
 from pptx.enum.dml import MSO_PATTERN_TYPE
 
+from pptx_tools.utils import _DO_NOT_CHANGE
+
+
 class FillType(Enum):
     NOFILL = auto()  # fill.background()
     SOLID = auto()  # fill.solid()
@@ -20,31 +23,31 @@ class FillType(Enum):
 
 class PPTXFillStyle:
     def __init__(self):
-        self.fill_type = FillType.SOLID
-        self._fore_color_rgb = None
-        self._fore_color_mso_theme = None
-        self.fore_color_brightness = None
+        self.fill_type: Optional[FillType] = None  # FillType.SOLID
+        self._fore_color_rgb: Union[RGBColor, Tuple[float, float, float], None] = None
+        self._fore_color_mso_theme: Optional[EnumValue] = None
+        self.fore_color_brightness: Optional[float] = None
 
-        self._back_color_rgb = None
-        self._back_color_mso_theme = None
-        self.back_color_brightness = None
+        self._back_color_rgb: Union[RGBColor, Tuple[float, float, float], None] = None
+        self._back_color_mso_theme: Optional[EnumValue] = None
+        self.back_color_brightness: Optional[float] = None
 
         self.pattern: Optional[MSO_PATTERN_TYPE] = None  # 0 ... 47
 
     @property
-    def fore_color_rgb(self):
+    def fore_color_rgb(self) -> Optional[RGBColor]:
         return self._fore_color_rgb
 
     @property
-    def fore_color_mso_theme(self):
+    def fore_color_mso_theme(self) -> Optional[EnumValue]:
         return self._fore_color_mso_theme
 
     @property
-    def back_color_rgb(self):
+    def back_color_rgb(self) -> Optional[RGBColor]:
         return self._back_color_rgb
 
     @property
-    def back_color_mso_theme(self):
+    def back_color_mso_theme(self) -> Optional[EnumValue]:
         return self._back_color_mso_theme
 
 
@@ -59,7 +62,7 @@ class PPTXFillStyle:
             self._fore_color_rgb = value
 
     @fore_color_mso_theme.setter
-    def fore_color_mso_theme(self, value):
+    def fore_color_mso_theme(self, value: Optional[EnumValue]):
         if value is not None:
             assert isinstance(value, EnumValue)
             self._fore_color_rgb = None  # only one color definition at a time!
@@ -76,11 +79,40 @@ class PPTXFillStyle:
             self._back_color_rgb = value
 
     @back_color_mso_theme.setter
-    def back_color_mso_theme(self, value):
+    def back_color_mso_theme(self, value: Optional[EnumValue]):
         if value is not None:
             assert isinstance(value, EnumValue)
             self._back_color_rgb = None  # only one color definition at a time!
         self._back_color_mso_theme = value
+
+    def set(self, fill_type: FillType =_DO_NOT_CHANGE,
+                 fore_color_rgb: Union[RGBColor, Tuple[any, any, any], None] = _DO_NOT_CHANGE,
+                 fore_color_mso_theme: Optional[EnumValue] = _DO_NOT_CHANGE,
+                 fore_color_brightness: Optional[float] = _DO_NOT_CHANGE,
+                 back_color_rgb: Union[RGBColor, Tuple[any, any, any], None] = _DO_NOT_CHANGE,
+                 back_color_mso_theme: Optional[EnumValue] = _DO_NOT_CHANGE,
+                 back_color_brightness: Optional[float] = _DO_NOT_CHANGE,
+                 pattern: Optional[MSO_PATTERN_TYPE] = _DO_NOT_CHANGE
+                 ):
+        if fill_type is not _DO_NOT_CHANGE:
+            self.fill_type = fill_type
+
+        if fore_color_rgb is not _DO_NOT_CHANGE:
+            self.fore_color_rgb = fore_color_rgb
+        if fore_color_mso_theme is not _DO_NOT_CHANGE:
+            self.fore_color_mso_theme = fore_color_mso_theme
+        if fore_color_brightness is not _DO_NOT_CHANGE:
+            self.fore_color_brightness = fore_color_brightness
+
+        if back_color_rgb is not _DO_NOT_CHANGE:
+            self.back_color_rgb = back_color_rgb
+        if back_color_mso_theme is not _DO_NOT_CHANGE:
+            self.back_color_mso_theme = back_color_mso_theme
+        if back_color_brightness is not _DO_NOT_CHANGE:
+            self.back_color_brightness = back_color_brightness
+
+        if pattern is not _DO_NOT_CHANGE:
+            self.pattern = pattern
 
     def write_fill(self, fill: FillFormat):
         if self.fill_type is not None:
