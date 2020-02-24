@@ -41,7 +41,6 @@ Content
      + `Table style example 01 <#table-style-example-01>`__
 
 
-
 class PPTXCreator
 -----------------
 

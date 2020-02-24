@@ -18,7 +18,7 @@ class FillType(Enum):
     NOFILL = auto()  # fill.background()
     SOLID = auto()  # fill.solid()
     PATTERNED = auto()  # # fill.patterned()
-    GRADIENT = auto  # fill.gradient(); not implemented jet
+    GRADIENT = auto()  # fill.gradient(); not implemented jet
 
 
 class PPTXFillStyle:
@@ -94,6 +94,7 @@ class PPTXFillStyle:
                  back_color_brightness: Optional[float] = _DO_NOT_CHANGE,
                  pattern: Optional[MSO_PATTERN_TYPE] = _DO_NOT_CHANGE
                  ):
+        """Convenience method to set several fill attributes together."""
         if fill_type is not _DO_NOT_CHANGE:
             self.fill_type = fill_type
 
@@ -115,6 +116,7 @@ class PPTXFillStyle:
             self.pattern = pattern
 
     def write_fill(self, fill: FillFormat):
+        """Write attributes to a FillFormat object."""
         if self.fill_type is not None:
             self._write_fill_type(fill)
 
