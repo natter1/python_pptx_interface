@@ -5,6 +5,8 @@ from typing import Optional
 
 from pptx.util import Inches
 
+from pptx_tools.utils import _DO_NOT_CHANGE
+
 
 class PPTXPosition:
     """
@@ -41,13 +43,19 @@ class PPTXPosition:
         self.left = left
         self.top = top
 
-    def set(self, left_rel=0.0, top_rel=0.0, left=0, top=0):
-        self.left_rel = left_rel
-        self.top_rel = top_rel
-        self.left = left
-        self.top = top
+    def set(self, left_rel=_DO_NOT_CHANGE, top_rel=_DO_NOT_CHANGE, left=_DO_NOT_CHANGE, top=_DO_NOT_CHANGE):
+        """Convenience method to set several PPTXPosition attributes together."""
+        if left_rel is not _DO_NOT_CHANGE:
+            self.left_rel = left_rel
+        if top_rel is not _DO_NOT_CHANGE:
+            self.top_rel = top_rel
+        if left is not _DO_NOT_CHANGE:
+            self.left = left
+        if top is not _DO_NOT_CHANGE:
+            self.top = top
 
-    def _dict_for_position(self, left_rel=0.0, top_rel=0.0, left=0, top=0):
+    @classmethod
+    def _dict_for_position(cls, left_rel=0.0, top_rel=0.0, left=0, top=0):
         """
         Returns kwargs dict for given default_position. Does not change attributes of self
         :param left_rel: float [slide_width]
@@ -56,8 +64,8 @@ class PPTXPosition:
         :param top: float [inch]
         :return: dictionary
         """
-        left = self._fraction_width_to_inch(left_rel) + Inches(left)
-        top = self._fraction_height_to_inch(top_rel) + Inches(top)
+        left = cls._fraction_width_to_inch(left_rel) + Inches(left)
+        top = cls._fraction_height_to_inch(top_rel) + Inches(top)
         return {"left": left, "top": top}
 
     def dict(self):
@@ -76,19 +84,28 @@ class PPTXPosition:
         top = self.dict()["top"]
         return left, top
 
-    def _fraction_width_to_inch(self, fraction):
+    @classmethod
+    def _fraction_width_to_inch(cls, fraction):
         """
         Returns a width in inches calculated as a fraction of total slide-width.
         :param fraction: float
         :return: Calculated Width in inch
         """
-        result = Inches(self.prs.slide_width.inches * fraction)
+        result = Inches(cls.prs.slide_width.inches * fraction)
         return result
 
-    def _fraction_height_to_inch(self, fraction):
+    @classmethod
+    def _fraction_height_to_inch(cls, fraction):
         """
         Returns a height in inches calculated as a fraction of total slide-height.
         :param fraction: float
         :return: Calculated Width in inch
         """
-        return Inches(self.prs.slide_height.inches * fraction)
+        return Inches(cls.prs.slide_height.inches * fraction)
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, PPTXPosition):
+            print(f"self.dict(): {self.dict()} - other.dict(): {other.dict()}")
+            return self.dict() == other.dict()
+        return NotImplemented
