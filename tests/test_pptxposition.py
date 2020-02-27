@@ -1,3 +1,6 @@
+"""
+@author: Nathanael Jöhrmann
+"""
 import pytest
 from pptx.util import Pt, Emu, Inches
 
