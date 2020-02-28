@@ -1,3 +1,7 @@
+"""
+This file contains tests for PPTXPosition-methods.
+@author: Nathanael Jöhrmann
+"""
 import pytest
 from pptx.util import Pt, Emu, Inches
 

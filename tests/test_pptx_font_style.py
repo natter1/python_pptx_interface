@@ -11,10 +11,11 @@ from pptx_tools.creator import PPTXCreator
 from pptx_tools.templates import TemplateExample
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope='session')
 def pptx_creator():
     creator = PPTXCreator(TemplateExample())
     yield creator
+
 
 class TestPPTXFontStyle:
     def test_color_rgb(self):
@@ -53,7 +54,7 @@ class TestPPTXFontStyle:
     def test_set(self):
         assert False
 
-    def test_save_test_results_as_temp_pptx_file(self, pptx_creator, tmpdir):
-        file = tmpdir.join("test_font_style.pptx")
-        pptx_creator.save(file)
-        assert True
+def test_save_test_results_as_temp_pptx_file(pptx_creator, tmpdir):
+    file = tmpdir.join("test_font_style.pptx")
+    pptx_creator.save(file)
+    assert True
