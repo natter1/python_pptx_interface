@@ -70,7 +70,10 @@ class PPTXFontStyle:
         self.bold = font.bold
         self.italic = font.italic
         self.name = font.name
-        self.size = font.size.pt
+        if font.size is None:
+            self.size = None
+        else:
+            self.size = font.size.pt
         self.underline = font.underline
         try:
             self.caps = TEXT_CAPS_VALUES(font._element.attrib['cap'])
