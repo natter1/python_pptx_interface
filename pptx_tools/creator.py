@@ -4,8 +4,8 @@ This module provides an easier Interface to create *.pptx presentations using th
 """
 import io
 import os
+from pathlib import Path
 from typing import Type, Optional, Iterable, Union
-
 
 from pptx_tools import utils
 from pptx_tools.position import PPTXPosition
@@ -14,10 +14,10 @@ from pptx_tools.table_style import PPTXTableStyle
 try:
     from matplotlib.figure import Figure
     import matplotlib.pyplot as plt
+
     has_matplotlib = True
 except ImportError as e:
     has_matplotlib = False
-
 
 import pptx
 from pptx.enum.text import MSO_AUTO_SIZE
@@ -39,6 +39,7 @@ class PPTXCreator:
         - use pptx templates (in combination with templates.py)
         - removes unused placeholder from added slides
     """
+
     # disable typechecker, because None values are not allowed for attributes, but needed to create them in __init__
     # Correct values are set when calling self._create_presentation()
     # noinspection PyTypeChecker
@@ -98,6 +99,25 @@ class PPTXCreator:
         self.remove_unpopulated_shapes(slide)
         return slide
 
+    def add_image(self, file: Union[Path, io.BytesIO], slide: Slide,
+                  position: PPTXPosition = None,
+                  zoom: float = 1.0,
+                  **kwargs) -> Picture:
+        """
+        Add an image from disk or io.BytesIO() to slide, and position it via position.
+        Optional parameter zoom sets image scaling in PowerPoint. Only used if width not in kwargs (default = 1.0).
+        """
+        # if "width" not in kwargs:
+        #     kwargs["width"] = Inches(fig.get_figwidth() * zoom)
+        if not position:
+            position = self.default_position
+        kwargs.update(position.dict())
+        # with io.BytesIO() as output:
+        #     fig.savefig(output, format="png")
+        pic = slide.shapes.add_picture(file, **kwargs)  # 0, 0)#, left, top)
+        pic.width = pic.width * zoom
+        return pic
+
     def add_matplotlib_figure(self, fig: 'Figure', slide: Slide,
                               position: PPTXPosition = None,
                               zoom: float = 1.0,
@@ -109,14 +129,15 @@ class PPTXCreator:
         if not has_matplotlib:
             raise ModuleNotFoundError("Adding a matplotlib figure needs module matplotlib to be installed.")
 
-        if "width" not in kwargs:
-            kwargs["width"] = Inches(fig.get_figwidth() * zoom)
-        if not position:
-            position = self.default_position
-        kwargs.update(position.dict())
+        # if "width" not in kwargs:
+        #     kwargs["width"] = Inches(fig.get_figwidth() * zoom)
+        # if not position:
+        #     position = self.default_position
+        # kwargs.update(position.dict())
         with io.BytesIO() as output:
             fig.savefig(output, format="png")
-            pic = slide.shapes.add_picture(output, **kwargs)  # 0, 0)#, left, top)
+            # pic = slide.shapes.add_picture(output, **kwargs)  # 0, 0)#, left, top)
+            pic = self.add_image(output, slide, position, zoom, **kwargs)  # 0, 0)#, left, top)
         return pic
 
     def add_latex_formula(self, formula: str, slide: Slide, position: PPTXPosition = None, dpi: int = 150,
@@ -173,7 +194,7 @@ class PPTXCreator:
         if position is None:
             position = self.default_position
         left, top = position.tuple()
-        result = slide.shapes.add_table(rows, cols, left, top, width=Inches(cols), height=Inches(0.5*rows))
+        result = slide.shapes.add_table(rows, cols, left, top, width=Inches(cols), height=Inches(0.5 * rows))
 
         table = result.table
         for ir, row in enumerate(table_data):
