@@ -4,7 +4,7 @@ This module provides an easier Interface to create *.pptx presentations using th
 """
 import io
 import os
-from pathlib import Path
+from pathlib import Path, PurePath
 from typing import Type, Optional, Iterable, Union
 
 from pptx_tools import utils
@@ -107,15 +107,17 @@ class PPTXCreator:
         Add an image from disk or io.BytesIO() to slide, and position it via position.
         Optional parameter zoom sets image scaling in PowerPoint. Only used if width not in kwargs (default = 1.0).
         """
-        # if "width" not in kwargs:
-        #     kwargs["width"] = Inches(fig.get_figwidth() * zoom)
+        # python-pptx (v0.6.18) can not handle Path object
+        if isinstance(file, PurePath):
+            file = str(file)
+
         if not position:
             position = self.default_position
         kwargs.update(position.dict())
-        # with io.BytesIO() as output:
-        #     fig.savefig(output, format="png")
+
         pic = slide.shapes.add_picture(file, **kwargs)  # 0, 0)#, left, top)
-        pic.width = pic.width * zoom
+        pic.width = round(pic.width * zoom)
+        pic.height = round(pic.height * zoom)
         return pic
 
     def add_matplotlib_figure(self, fig: 'Figure', slide: Slide,
@@ -129,11 +131,6 @@ class PPTXCreator:
         if not has_matplotlib:
             raise ModuleNotFoundError("Adding a matplotlib figure needs module matplotlib to be installed.")
 
-        # if "width" not in kwargs:
-        #     kwargs["width"] = Inches(fig.get_figwidth() * zoom)
-        # if not position:
-        #     position = self.default_position
-        # kwargs.update(position.dict())
         with io.BytesIO() as output:
             fig.savefig(output, format="png")
             # pic = slide.shapes.add_picture(output, **kwargs)  # 0, 0)#, left, top)
