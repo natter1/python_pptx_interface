@@ -6,12 +6,12 @@ import _ctypes
 import os
 from typing import Generator, Union
 
-
 try:
     from comtypes.client import Constants, CreateObject
-    has_comptypes=True
+
+    has_comptypes = True
 except:
-    has_comptypes=False
+    has_comptypes = False
 
 import pptx
 from pptx.table import Table, _Cell
@@ -21,7 +21,7 @@ import tempfile
 class TemporaryPPTXFile:
     __slots__ = ('_file', 'dir', 'filepath', 'raise_on_delete_error')
 
-    def __init__(self, mode="w+b", suffix=".pptx", dir=None, raise_on_delete_error = True):
+    def __init__(self, mode="w+b", suffix=".pptx", dir=None, raise_on_delete_error=True):
         if not dir:
             dir = tempfile.gettempdir()
         self.dir = dir
@@ -52,18 +52,19 @@ class _USE_DEFAULT:  # using a class allows typing
                "changed when calling PPTXFontStyle.write_font(). But to remove a customized paragraph size, e.g. in a run, " \
                "the value has to be set to None in python-pptx. Thats done with 'PPTXFontStyle.size = use_default'."
 
+
 class _DO_NOT_CHANGE:
     def __str__(self):
         return """used to tell PPTXFontStyle.set() / PPTXParagraphStyle.set() ... to not change a value"""
+
 
 def use_default():
     return _USE_DEFAULT
 
 
-def iter_table_cells(table:  Table) -> Generator[_Cell, None, None]:
+def iter_table_cells(table: Table) -> Generator[_Cell, None, None]:
     for row in table.rows:
-        for cell in row.cells:
-            yield cell
+        yield from row.cells
 
 
 def change_paragraph_text_to(paragraph, text):
@@ -87,6 +88,7 @@ def copy_font(_from: 'Font', _to: 'Font') -> None:
     font_style.read_font(_from)
     font_style.write_font(_to)
 
+
 # ----------------------------------------------------------------------------------------------------------------------
 # The following functions need an installed PowerPoint and will only work on windows systems.
 # ----------------------------------------------------------------------------------------------------------------------
@@ -109,6 +111,7 @@ def save_pptx_as_png(save_folder: Union[str, "LocalPath"], pptx_filename: str, o
     if powerpoint.Presentations.Count == 0:  # only close, when no other Presentations are open!
         powerpoint.quit()
     return True
+
 
 def save_pptx_as_pdf(pdf_filename: Union[str, "LocalPath"], pptx_filename, overwrite: bool = False) -> bool:
     """

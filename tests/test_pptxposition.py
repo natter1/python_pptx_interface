@@ -3,7 +3,7 @@ This file contains tests for PPTXPosition-methods.
 @author: Nathanael Jöhrmann
 """
 import pytest
-from pptx.util import Pt, Emu, Inches
+from pptx.util import Emu
 
 from pptx_tools.creator import PPTXCreator
 from pptx_tools.position import PPTXPosition
@@ -25,7 +25,7 @@ def pptx_position(pptx_creator):
 class TestPPTXPosition:
     def test__eq__(self, pptx_position):
         assert pptx_position == PPTXPosition(0, 0.5, 1, 2)
-        assert PPTXPosition(0.2, 0, 2, 1) == PPTXPosition(0, 0, Emu(4267200).inches,  Emu(914400).inches)
+        assert PPTXPosition(0.2, 0, 2, 1) == PPTXPosition(0, 0, Emu(4267200).inches, Emu(914400).inches)
 
     def test_set(self, pptx_position):
         pptx_position.set()  # all arguments optional - without arguments should not change anything!
@@ -43,9 +43,9 @@ class TestPPTXPosition:
         assert pptx_position.tuple() == (914400, 5257800)
 
     def test__fraction_width_to_inch(self, pptx_position):
-        assert PPTXPosition()._fraction_width_to_inch(0) == Inches(0)
-        assert PPTXPosition()._fraction_width_to_inch(1) == Inches(13.0 + 1/3)
+        assert PPTXPosition()._fraction_width_to_inch(0) == 0
+        assert PPTXPosition()._fraction_width_to_inch(1) == 13.0 + 1 / 3
 
     def test__fraction_height_to_inch(self, pptx_position):
-        assert PPTXPosition()._fraction_height_to_inch(0) == Inches(0)
-        assert PPTXPosition()._fraction_height_to_inch(1) == Inches(7.5)
+        assert PPTXPosition()._fraction_height_to_inch(0) == 0
+        assert PPTXPosition()._fraction_height_to_inch(1) == 7.5

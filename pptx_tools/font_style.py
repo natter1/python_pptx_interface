@@ -42,7 +42,6 @@ class PPTXFontStyle:
         # saved in units of Pt (not EMU like pptx.text.text.Font) - converting to EMU is done during write_to_font
         self.size: Optional[int] = None  # 18
 
-
         # todo: color is ColorFormat object
         self._color_rgb: Optional[RGBColor] = None
         # fil.fore_color changes paragraph color; also gradient or image might be useful (not implemented in FillStyle jet)
@@ -59,21 +58,14 @@ class PPTXFontStyle:
     @color_rgb.setter
     def color_rgb(self, value: Union[RGBColor, Tuple[any, any, any], None]):
         assert isinstance(value, RGBColor) or isinstance(value, tuple) or (value is None)
-        if isinstance(value, tuple):
-            self._color_rgb = RGBColor(*value)
-        else:
-            self._color_rgb = value
-
+        self._color_rgb = RGBColor(*value) if isinstance(value, tuple) else value
 
     def read_font(self, font: Font) -> 'PPTXFontStyle':  # todo: check for None behavior (use_dfault() ? )
         """Read attributes from a pptx.text.text.Font object."""
         self.bold = font.bold
         self.italic = font.italic
         self.name = font.name
-        if font.size is None:
-            self.size = None
-        else:
-            self.size = font.size.pt
+        self.size = None if font.size is None else font.size.pt
         self.underline = font.underline
         try:
             self.caps = TEXT_CAPS_VALUES(font._element.attrib['cap'])
@@ -98,11 +90,7 @@ class PPTXFontStyle:
             font.language_id = self._get_write_value(new_value=self.language_id, old_value=font.language_id)
 
         if self.size is not None:
-            if self.size == _USE_DEFAULT:
-                font.size = None
-            else:
-                font.size = Pt(self.size)
-
+            font.size = None if self.size == _USE_DEFAULT else Pt(self.size)
         if self.color_rgb is not None:
             font.color.rgb = self.color_rgb
 

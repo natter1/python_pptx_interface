@@ -56,8 +56,7 @@ class PPTXCreator:
         """
         Returns a width in inches calculated as a fraction of total slide-width.
         """
-        result = Inches(self.prs.slide_width.inches * fraction)
-        return result
+        return Inches(self.prs.slide_width.inches * fraction)
 
     def _fraction_height_to_inch(self, fraction: float) -> Inches:
         """
@@ -241,10 +240,10 @@ class PPTXCreator:
 
     def add_content_slide(self, slide_index=1):
         """Add a content slide with hyperlinks to all other slides and puts it to position slide_index."""
-        content_entries = []
+        content_entries = [
+            (slide.shapes.title.text, slide) for slide in self.prs.slides
+        ]
 
-        for slide in self.prs.slides:
-            content_entries.append((slide.shapes.title.text, slide))
 
         result = self.add_slide("Content")
         content_text_box = self.add_text_box(result, "", PPTXPosition(0.1, 0.2))

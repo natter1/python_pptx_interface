@@ -5,6 +5,9 @@ This script demonstrates basic features of python-pptx-interface.
 
 import os
 
+from pptx.enum.lang import MSO_LANGUAGE_ID
+from pptx.enum.text import MSO_TEXT_UNDERLINE_TYPE, PP_PARAGRAPH_ALIGNMENT
+
 from pptx_tools.creator import PPTXCreator
 # from pptx_tools.fill_style import PPTXFillStyle, FillType
 from pptx_tools.enumerations import TEXT_STRIKE_VALUES, TEXT_CAPS_VALUES
@@ -14,11 +17,9 @@ from pptx_tools.position import PPTXPosition
 from pptx_tools.style_sheets import font_title, font_default
 from pptx_tools.templates import TemplateExample
 
-from pptx.enum.lang import MSO_LANGUAGE_ID
-from pptx.enum.text import MSO_TEXT_UNDERLINE_TYPE, PP_PARAGRAPH_ALIGNMENT
-
 try:
     import matplotlib.pyplot as plt
+
     matplotlib_installed = True
 except ImportError as e:
     matplotlib_installed = False
@@ -90,7 +91,6 @@ def run(save_dir: str):
     paragraph_style = PPTXParagraphStyle()
     paragraph_style.set(alignment=PP_PARAGRAPH_ALIGNMENT.CENTER)
     paragraph_style.write_shape(table)
-
 
     if matplotlib_installed:
         fig = create_demo_figure()

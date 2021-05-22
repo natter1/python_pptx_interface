@@ -16,10 +16,11 @@ class PPTXParagraphStyle:
     """
     Helper class to deal with paragraphs in python-pptx.
     """
+
     def __init__(self):
         # the following values cannot be inherited from parent object(?) -----------------------------------------------
         self.alignment: Optional[PP_PARAGRAPH_ALIGNMENT] = None  # PP_PARAGRAPH_ALIGNMENT.CENTER/JUSTIFY/LEFT/RIGHT/...
-        self.level: Optional[int] =None  # 0 .. 8 (indentation level)
+        self.level: Optional[int] = None  # 0 .. 8 (indentation level)
         self.line_spacing: Optional[float] = None
         self.space_before: Optional[float] = None
         self.space_after: Optional[float] = None

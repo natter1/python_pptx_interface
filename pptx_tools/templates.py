@@ -2,8 +2,8 @@
 This file contains variables with names of important pptx template master_slide shapes
 """
 from datetime import datetime
-import pkg_resources
 
+import pkg_resources
 # from pptx.enum.text import MSO_AUTO_SIZE
 from pptx import Presentation
 
@@ -16,6 +16,7 @@ class AbstractTemplate(metaclass=ABCMeta):
     Templates should subclass this abstract class, to make sure,
     that all important attributes/methodes are defined.
     """
+
     @abstract_attribute
     def TEMPLATE_FILE(cls):
         pass
@@ -67,7 +68,7 @@ class TemplateExample(AbstractTemplate):
         self.write_text_to_master_shape(text=text, shape_name=self.author_shape_name)
 
     def set_website(self, text):
-        self.write_text_to_master_shape(text = text, shape_name=self.website_shape_name)
+        self.write_text_to_master_shape(text=text, shape_name=self.website_shape_name)
 
     def write_text_to_master_shape(self, text, shape_name):
         for shape in self.master_shapes:
@@ -75,6 +76,7 @@ class TemplateExample(AbstractTemplate):
                 continue
             if shape.name == shape_name:
                 change_paragraph_text_to(shape.text_frame.paragraphs[0], text)
+
     @property
     def master_shapes(self):
         result = []
@@ -107,7 +109,7 @@ def analyze_pptx(template_file):
                 print(dummystring)
             except:
                 pass
-            #shape.text = 'hahahaha'
+            # shape.text = 'hahahaha'
         # for shape in slide_master.slideshapes:
         #     print(shape)
         print('------------------------------------')

@@ -65,7 +65,7 @@ class PPTXPosition:
         :return: dictionary
         """
         left = cls._fraction_width(left_rel) + Inches(left)
-        top =  cls._fraction_height(top_rel) + Inches(top)
+        top = cls._fraction_height(top_rel) + Inches(top)
         return {"left": left, "top": top}
 
     def dict(self):
@@ -91,8 +91,7 @@ class PPTXPosition:
         :param fraction: float
         :return: Calculated Width in inch
         """
-        result = Inches(cls.prs.slide_width.inches) * fraction
-        return result
+        return Inches(cls.prs.slide_width.inches) * fraction
 
     @classmethod
     def _fraction_height(cls, fraction):
@@ -110,8 +109,7 @@ class PPTXPosition:
         :param fraction: float
         :return: Calculated Width in inch
         """
-        result = cls.prs.slide_width.inches * fraction
-        return result
+        return cls.prs.slide_width.inches * fraction
 
     @classmethod
     def _fraction_height_to_inch(cls, fraction):

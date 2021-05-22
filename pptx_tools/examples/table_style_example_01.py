@@ -23,7 +23,8 @@ def run(save_dir: str):
     # data for a table with 5 rows and 3 cols.
     table_data = []
     table_data.append([1, "The second column is longer."])  # rows can have different length
-    table_data.append([2, "Table entries don't have to be strings,"])  # there is specific type needed for entries (implemented as text=f"{entry}")
+    table_data.append([2,
+                       "Table entries don't have to be strings,"])  # there is specific type needed for entries (implemented as text=f"{entry}")
     table_data.append([3, "because its implemented as text=f'{entry}'"])
     table_data.append([4, "also note: the number of entries per row is", " not fixed"])
     table_data.append([5, "That's it for now."])

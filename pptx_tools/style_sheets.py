@@ -3,13 +3,13 @@ This file is a simple example on how to use style sheets. If you want to use cus
 paragraph styles in your project, you should create a customized version.
 @author: Nathanael Jöhrmann
 """
-from pptx.util import Inches
+
+# from pptx.enum.lang import MSO_LANGUAGE_ID
+from pptx.enum.text import PP_PARAGRAPH_ALIGNMENT
 
 from pptx_tools.fill_style import FillType
 from pptx_tools.font_style import PPTXFontStyle
 from pptx_tools.paragraph_style import PPTXParagraphStyle
-# from pptx.enum.lang import MSO_LANGUAGE_ID
-from pptx.enum.text import PP_PARAGRAPH_ALIGNMENT
 from pptx_tools.table_style import PPTXTableStyle, PPTXCellStyle
 
 

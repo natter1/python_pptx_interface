@@ -8,7 +8,6 @@ from typing import Union, Optional, Tuple
 from pptx.dml.color import RGBColor
 from pptx.dml.fill import FillFormat
 from pptx.enum.base import EnumValue
-from pptx.enum.dml import MSO_THEME_COLOR_INDEX
 from pptx.enum.dml import MSO_PATTERN_TYPE
 
 from pptx_tools.utils import _DO_NOT_CHANGE
@@ -50,16 +49,12 @@ class PPTXFillStyle:
     def back_color_mso_theme(self) -> Optional[EnumValue]:
         return self._back_color_mso_theme
 
-
     @fore_color_rgb.setter
     def fore_color_rgb(self, value: Union[RGBColor, Tuple[any, any, any], None]):
         if value is not None:
-            assert isinstance(value, RGBColor) or isinstance(value, tuple)
+            assert isinstance(value, (RGBColor, tuple))
             self._fore_color_mso_theme = None  # only one color definition at a time!
-        if isinstance(value, tuple):
-            self._fore_color_rgb = RGBColor(*value)
-        else:
-            self._fore_color_rgb = value
+        self._fore_color_rgb = RGBColor(*value) if isinstance(value, tuple) else value
 
     @fore_color_mso_theme.setter
     def fore_color_mso_theme(self, value: Optional[EnumValue]):
@@ -71,12 +66,9 @@ class PPTXFillStyle:
     @back_color_rgb.setter
     def back_color_rgb(self, value: Union[RGBColor, Tuple[any, any, any], None]):
         if value is not None:
-            assert isinstance(value, RGBColor) or isinstance(value, tuple)
+            assert isinstance(value, (RGBColor, tuple))
             self._fore_color_mso_theme = None  # only one color definition at a time!
-        if isinstance(value, tuple):
-            self._back_color_rgb = RGBColor(*value)
-        else:
-            self._back_color_rgb = value
+        self._back_color_rgb = RGBColor(*value) if isinstance(value, tuple) else value
 
     @back_color_mso_theme.setter
     def back_color_mso_theme(self, value: Optional[EnumValue]):
@@ -85,15 +77,15 @@ class PPTXFillStyle:
             self._back_color_rgb = None  # only one color definition at a time!
         self._back_color_mso_theme = value
 
-    def set(self, fill_type: FillType =_DO_NOT_CHANGE,
-                 fore_color_rgb: Union[RGBColor, Tuple[any, any, any], None] = _DO_NOT_CHANGE,
-                 fore_color_mso_theme: Optional[EnumValue] = _DO_NOT_CHANGE,
-                 fore_color_brightness: Optional[float] = _DO_NOT_CHANGE,
-                 back_color_rgb: Union[RGBColor, Tuple[any, any, any], None] = _DO_NOT_CHANGE,
-                 back_color_mso_theme: Optional[EnumValue] = _DO_NOT_CHANGE,
-                 back_color_brightness: Optional[float] = _DO_NOT_CHANGE,
-                 pattern: Optional[MSO_PATTERN_TYPE] = _DO_NOT_CHANGE
-                 ):
+    def set(self, fill_type: FillType = _DO_NOT_CHANGE,
+            fore_color_rgb: Union[RGBColor, Tuple[any, any, any], None] = _DO_NOT_CHANGE,
+            fore_color_mso_theme: Optional[EnumValue] = _DO_NOT_CHANGE,
+            fore_color_brightness: Optional[float] = _DO_NOT_CHANGE,
+            back_color_rgb: Union[RGBColor, Tuple[any, any, any], None] = _DO_NOT_CHANGE,
+            back_color_mso_theme: Optional[EnumValue] = _DO_NOT_CHANGE,
+            back_color_brightness: Optional[float] = _DO_NOT_CHANGE,
+            pattern: Optional[MSO_PATTERN_TYPE] = _DO_NOT_CHANGE
+            ):
         """Convenience method to set several fill attributes together."""
         if fill_type is not _DO_NOT_CHANGE:
             self.fill_type = fill_type

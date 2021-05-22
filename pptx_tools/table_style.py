@@ -8,9 +8,9 @@ from pptx.shapes.autoshape import Shape
 from pptx.table import Table, _Cell
 from pptx.util import Inches
 
+from pptx_tools.fill_style import PPTXFillStyle
 from pptx_tools.font_style import PPTXFontStyle
 from pptx_tools.position import PPTXPosition
-from pptx_tools.fill_style import PPTXFillStyle
 from pptx_tools.utils import iter_table_cells, _DO_NOT_CHANGE
 
 
@@ -26,6 +26,7 @@ class PPTXTableStyle:
     """
     ...
     """
+
     def __init__(self):
         self.font_style: Optional[PPTXFontStyle] = None  # PPTXFontStyle()
         self.cell_style: Optional[PPTXCellStyle] = None  # PPTXCellStyle()
@@ -131,5 +132,3 @@ class PPTXTableStyle:
                             " Create a PPTXCreator instance first, or set manually.")
 
         self.width = PPTXPosition.prs.slide_width.inches * fraction
-
-
