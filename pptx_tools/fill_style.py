@@ -7,7 +7,7 @@ from typing import Union, Optional, Tuple
 
 from pptx.dml.color import RGBColor
 from pptx.dml.fill import FillFormat
-from pptx.enum.base import EnumValue
+from pptx.enum.dml import MSO_COLOR_TYPE as EnumValue
 from pptx.enum.dml import MSO_PATTERN_TYPE
 
 from pptx_tools.utils import _DO_NOT_CHANGE

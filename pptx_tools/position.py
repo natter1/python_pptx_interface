@@ -91,7 +91,7 @@ class PPTXPosition:
         :param fraction: float
         :return: Calculated Width in inch
         """
-        return Inches(cls.prs.slide_width.inches) * fraction
+        return int(Inches(cls.prs.slide_width.inches) * fraction)
 
     @classmethod
     def _fraction_height(cls, fraction):
@@ -100,7 +100,7 @@ class PPTXPosition:
         :param fraction: float
         :return: Calculated Width in inch
         """
-        return Inches(cls.prs.slide_height.inches) * fraction
+        return int(Inches(cls.prs.slide_height.inches) * fraction)
 
     @classmethod
     def _fraction_width_to_inch(cls, fraction):

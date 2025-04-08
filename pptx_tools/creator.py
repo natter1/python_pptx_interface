@@ -190,7 +190,7 @@ class PPTXCreator:
         if position is None:
             position = self.default_position
         left, top = position.tuple()
-        result = slide.shapes.add_table(rows, cols, left, top, width=Inches(cols), height=Inches(0.5 * rows))
+        result = slide.shapes.add_table(rows, cols, int(left), top, width=Inches(cols), height=Inches(0.5 * rows))
 
         table = result.table
         for ir, row in enumerate(table_data):
