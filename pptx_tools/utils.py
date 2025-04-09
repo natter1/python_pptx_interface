@@ -130,6 +130,12 @@ def save_pptx_as_pdf(pdf_filename: Union[str, "LocalPath"], pptx_filename, overw
     powerpoint = CreateObject("Powerpoint.Application")
     pp_constants = Constants(powerpoint)
     pres = powerpoint.Presentations.Open(pptx_filename)
+
+    # calling SaveAs directly after Open seems to cause errors; a short wait is a workaround for this issue
+    import time
+    time.sleep(1)
+    # --------------------------------------------------------------------------------------
+
     pres.SaveAs(str(pdf_filename), pp_constants.ppSaveAsPDF)
     pres.close()
     if powerpoint.Presentations.Count == 0:  # only close, when no other Presentations are open!

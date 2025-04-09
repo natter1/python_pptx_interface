@@ -3,7 +3,7 @@ This file contains variables with names of important pptx template master_slide 
 """
 from datetime import datetime
 
-import pkg_resources
+import importlib.resources
 # from pptx.enum.text import MSO_AUTO_SIZE
 from pptx import Presentation
 
@@ -41,8 +41,9 @@ class TemplateExample(AbstractTemplate):
     """
     Class handling example-template.pptx).
     """
-    TEMPLATE_FILE = pkg_resources.resource_filename('pptx_tools', 'resources/example-template.pptx')
-
+    TEMPLATE_FILE = str(importlib.resources.as_file(
+                    importlib.resources.files('pptx_tools').joinpath('resources/example-template.pptx')
+                    ).__enter__())
     def __init__(self):
         self.prs = Presentation(self.TEMPLATE_FILE)
 

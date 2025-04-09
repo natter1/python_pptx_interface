@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+packages = [
+    'pptx_tools',
+    'pptx_tools.examples',
+]
+include = [
+    "pptx_tools/resources/example-template.pptx",
+]
+
+[project]
+name = "python-pptx-interface"
+version = "0.0.13c"
+authors = [
+  { name="Nathanael Jöhrmann", email="" },
+]
+description = "Easy interface to create pptx-files using python-pptx"
+readme = "README.rst"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+dependencies = [
+    "python-pptx>=1.0.0",
+    "matplotlib>=3.9.2",
+    "scipy>=1.8.0",
+    "comtypes>=1.4.10",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3.5"]
+
+
+
+[project.urls]
+Homepage = "https://github.com/natter1/python_pptx_interface"
+Issues = "https://github.com/natter1/python_pptx_interface/issues"
