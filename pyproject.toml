@@ -13,7 +13,7 @@ include = [
 
 [project]
 name = "python-pptx-interface"
-version = "0.0.13c"
+version = "0.0.14"
 authors = [
   { name="Nathanael Jöhrmann", email="" },
 ]
